@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BahasaKu SD/MI 📖</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fdf8f0;
+  --bg2: #fef3e2;
+  --card: #ffffff;
+  --border: #e8d9c0;
+  --teal: #0d9488;
+  --teal-light: #ccfbf1;
+  --teal-dark: #0f766e;
+  --coral: #f97316;
+  --coral-light: #ffedd5;
+  --gold: #d97706;
+  --gold-light: #fef3c7;
+  --purple: #7c3aed;
+  --purple-light: #ede9fe;
+  --text: #1c1917;
+  --text2: #57534e;
+  --muted: #a8a29e;
+  --correct: #059669;
+  --correct-bg: #d1fae5;
+  --wrong: #dc2626;
+  --wrong-bg: #fee2e2;
+  --shadow: 0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,.12);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* floating background blobs */
+body::before {
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(13,148,136,.06) 0%, transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(249,115,22,.05) 0%, transparent 35%),
+    radial-gradient(circle at 70% 80%, rgba(124,58,237,.04) 0%, transparent 40%),
+    radial-gradient(circle at 10% 85%, rgba(217,119,6,.05) 0%, transparent 35%);
+}
+
+/* wavy top decoration */
+.wave-top {
+  position:fixed; top:0; left:0; right:0; height:6px; z-index:100;
+  background: linear-gradient(90deg, var(--teal), var(--coral), var(--gold), var(--purple), var(--teal));
+  background-size: 200% 100%;
+  animation: waveShift 4s linear infinite;
+}
+@keyframes waveShift { from{background-position:0%} to{background-position:200%} }
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 16px 48px;
+  position: relative; z-index: 1;
+}
+
+/* ── HEADER ── */
+header { text-align:center; margin-bottom:28px; padding-top:12px; }
+.header-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--teal-light); color:var(--teal-dark);
+  font-size:.72rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+  padding:5px 14px; border-radius:20px; margin-bottom:10px;
+}
+header h1 {
+  font-family:'Baloo 2',cursive; font-weight:800; font-size:2.6rem;
+  color:var(--text); line-height:1;
+}
+header h1 span { color:var(--teal); }
+header p { color:var(--text2); font-size:.9rem; margin-top:6px; }
+
+/* ── TABS ── */
+.tabs {
+  display:flex; gap:6px; justify-content:center;
+  margin-bottom:22px; flex-wrap:wrap;
+}
+.tab {
+  padding:9px 20px; border-radius:50px;
+  border:2px solid var(--border); background:var(--card);
+  color:var(--text2); cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.85rem; font-weight:700;
+  transition:all .18s; box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.tab:hover { border-color:var(--teal); color:var(--teal); }
+.tab.active { background:var(--teal); border-color:var(--teal); color:#fff; box-shadow:0 4px 12px rgba(13,148,136,.3); }
+
+/* ── SCOREBAR ── */
+.scorebar {
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--card); border:2px solid var(--border);
+  border-radius:18px; padding:14px 20px; margin-bottom:20px;
+  box-shadow:var(--shadow);
+}
+.sb-item { text-align:center; }
+.sb-val { font-family:'Baloo 2',cursive; font-size:1.6rem; font-weight:800; }
+.sb-lbl { font-size:.68rem; color:var(--muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+.sb-val.green { color:var(--correct); }
+.sb-val.red { color:var(--wrong); }
+.sb-val.gold { color:var(--gold); }
+.sb-val.teal { color:var(--teal); }
+
+/* ── KELAS SELECTOR ── */
+.kelas-wrap {
+  display:flex; gap:6px; justify-content:center;
+  margin-bottom:16px; flex-wrap:wrap;
+}
+.kelas-btn {
+  padding:7px 14px; border-radius:30px;
+  border:2px solid var(--border); background:var(--card);
+  color:var(--text2); cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.8rem; font-weight:800;
+  transition:all .18s;
+}
+.kelas-btn:hover { border-color:var(--coral); color:var(--coral); }
+.kelas-btn.active {
+  border-color:var(--coral); color:var(--coral);
+  background:var(--coral-light);
+}
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  background:var(--border); border-radius:99px;
+  height:8px; margin-bottom:20px; overflow:hidden;
+}
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--teal),var(--coral));
+  border-radius:99px; transition:width .4s ease;
+}
+.progress-label {
+  display:flex; justify-content:space-between;
+  font-size:.72rem; color:var(--muted); font-weight:700;
+  margin-bottom:6px;
+}
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:24px; padding:28px 24px;
+  margin-bottom:14px; box-shadow:var(--shadow);
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.q-meta {
+  display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap;
+}
+.q-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--teal-light); color:var(--teal-dark);
+  font-size:.7rem; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+  padding:4px 12px; border-radius:20px;
+}
+.q-subtema {
+  font-size:.72rem; color:var(--muted); font-weight:700;
+  background:var(--bg2); padding:4px 10px; border-radius:20px;
+}
+.q-difficulty {
+  font-size:.68rem; font-weight:800; padding:4px 10px; border-radius:20px;
+}
+.diff-mudah { background:#d1fae5; color:#065f46; }
+.diff-sedang { background:#fef3c7; color:#92400e; }
+.diff-sulit { background:#fee2e2; color:#991b1b; }
+
+.q-emoji { font-size:2.4rem; display:block; text-align:center; margin-bottom:10px; animation:bob 2.5s ease-in-out infinite; }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+.q-context {
+  background:var(--bg2); border-left:4px solid var(--teal);
+  border-radius:0 12px 12px 0; padding:12px 14px;
+  font-size:.88rem; color:var(--text2); line-height:1.7;
+  margin-bottom:14px; font-style:italic;
+}
+.q-text {
+  font-family:'Baloo 2',cursive; font-size:1.25rem; font-weight:700;
+  color:var(--text); line-height:1.5; text-align:center; margin-bottom:6px;
+}
+.q-hint-area {
+  min-height:22px; font-size:.82rem; color:var(--muted);
+  text-align:center; margin-top:4px; transition:color .2s;
+}
+.q-hint-area.shown { color:var(--gold); font-weight:700; }
+
+/* ── OPTIONS ── */
+.options {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:10px; margin-bottom:14px;
+}
+.option {
+  background:var(--bg); border:2px solid var(--border);
+  border-radius:14px; padding:14px 16px;
+  cursor:pointer; text-align:left;
+  font-family:'Nunito',sans-serif; font-size:.92rem; font-weight:700;
+  color:var(--text); transition:all .16s;
+  display:flex; align-items:center; gap:10px;
+}
+.option:hover:not(.disabled) {
+  border-color:var(--teal); background:var(--teal-light);
+  transform:translateY(-2px); box-shadow:0 4px 12px rgba(13,148,136,.15);
+}
+.opt-letter {
+  width:28px; height:28px; border-radius:8px; flex-shrink:0;
+  background:var(--border); color:var(--text2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.78rem; font-weight:800; transition:all .16s;
+}
+.option:hover:not(.disabled) .opt-letter { background:var(--teal); color:#fff; }
+.option.correct { border-color:var(--correct); background:var(--correct-bg); }
+.option.correct .opt-letter { background:var(--correct); color:#fff; }
+.option.wrong { border-color:var(--wrong); background:var(--wrong-bg); }
+.option.wrong .opt-letter { background:var(--wrong); color:#fff; }
+.option.disabled { cursor:not-allowed; opacity:.75; }
+
+/* ── FEEDBACK ── */
+.feedback {
+  text-align:center; padding:12px 16px; border-radius:14px;
+  font-size:.92rem; font-weight:700; margin-bottom:12px;
+  opacity:0; transition:opacity .2s; display:none;
+}
+.feedback.show { opacity:1; display:block; }
+.feedback.correct { background:var(--correct-bg); color:var(--correct); border:1.5px solid rgba(5,150,105,.25); }
+.feedback.wrong { background:var(--wrong-bg); color:var(--wrong); border:1.5px solid rgba(220,38,38,.2); }
+
+.pembahasan {
+  background:var(--gold-light); border:1.5px solid #fcd34d;
+  border-radius:12px; padding:10px 14px; margin-bottom:12px;
+  font-size:.82rem; color:#78350f; line-height:1.6; display:none;
+}
+.pembahasan.show { display:block; }
+.pembahasan strong { color:#92400e; }
+
+/* ── NAV ROW ── */
+.nav-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.btn {
+  padding:10px 20px; border-radius:12px;
+  border:2px solid var(--border); background:var(--card);
+  color:var(--text2); cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.84rem; font-weight:700;
+  transition:all .16s; box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.btn:hover { border-color:var(--teal); color:var(--teal); }
+.btn.primary { background:var(--teal); border-color:var(--teal); color:#fff; box-shadow:0 4px 12px rgba(13,148,136,.3); }
+.btn.primary:hover { background:var(--teal-dark); }
+.btn.coral { border-color:var(--coral); color:var(--coral); }
+.btn.coral:hover { background:var(--coral-light); }
+
+/* ── RESULTS ── */
+.results {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:24px; padding:36px 24px; text-align:center;
+  box-shadow:var(--shadow-lg); animation:slideUp .4s ease;
+}
+.result-emoji { font-size:4rem; display:block; margin-bottom:8px; }
+.result-score {
+  font-family:'Baloo 2',cursive; font-size:4.5rem; font-weight:800;
+  color:var(--teal); line-height:1;
+}
+.result-grade { font-family:'Baloo 2',cursive; font-size:1.6rem; font-weight:800; margin:6px 0; }
+.result-desc { color:var(--text2); font-size:.9rem; margin-bottom:20px; }
+.result-breakdown {
+  display:flex; gap:12px; justify-content:center;
+  margin-bottom:24px; flex-wrap:wrap;
+}
+.rb-item {
+  background:var(--bg2); border:2px solid var(--border);
+  border-radius:14px; padding:10px 20px; text-align:center;
+}
+.rb-val { font-family:'Baloo 2',cursive; font-size:1.6rem; font-weight:800; }
+
+/* ── MATERI TAB ── */
+.materi-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:20px; padding:20px; margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.materi-card h3 {
+  font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700;
+  color:var(--teal); margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+}
+.materi-card p { color:var(--text2); font-size:.86rem; line-height:1.75; margin-bottom:8px; }
+.materi-tag {
+  display:inline-block; background:var(--teal-light); color:var(--teal-dark);
+  font-size:.72rem; font-weight:700; padding:3px 10px; border-radius:20px;
+  margin:2px; border:1px solid rgba(13,148,136,.2);
+}
+.contoh-box {
+  background:var(--bg2); border-left:3px solid var(--coral);
+  border-radius:0 10px 10px 0; padding:10px 12px; margin-top:8px;
+  font-size:.84rem; color:var(--text); line-height:1.7;
+}
+
+/* ── STREAK TOAST ── */
+.streak-toast {
+  position:fixed; top:20px; right:16px; z-index:999;
+  background:var(--gold); color:#fff; font-weight:800;
+  padding:10px 18px; border-radius:14px; font-size:.84rem;
+  opacity:0; pointer-events:none; transition:opacity .3s;
+  font-family:'Nunito',sans-serif; box-shadow:0 4px 20px rgba(217,119,6,.4);
+}
+.streak-toast.show { opacity:1; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:500px) {
+  header h1 { font-size:2rem; }
+  .q-text { font-size:1.05rem; }
+  .options { grid-template-columns:1fr; }
+  .option { font-size:.86rem; }
+  .result-score { font-size:3.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="wave-top"></div>
+<div class="streak-toast" id="streakToast"></div>
+<div class="container">
+
+  <header>
+    <div class="header-badge">📖 SD / MI</div>
+    <h1>Bahasa<span>Ku</span> 📚</h1>
+    <p>Latihan Bahasa Indonesia Kelas 1–6 SD/MI • 300 Soal Pilgan</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('latihan')">🎯 Latihan</button>
+    <button class="tab" onclick="switchTab('materi')">📖 Materi</button>
+  </div>
+
+  <!-- LATIHAN -->
+  <div id="tab-latihan">
+    <div class="scorebar">
+      <div class="sb-item"><div class="sb-val green" id="sc-benar">0</div><div class="sb-lbl">Benar</div></div>
+      <div class="sb-item"><div class="sb-val red" id="sc-salah">0</div><div class="sb-lbl">Salah</div></div>
+      <div class="sb-item"><div class="sb-val gold" id="sc-streak">0🔥</div><div class="sb-lbl">Streak</div></div>
+      <div class="sb-item"><div class="sb-val teal" id="sc-no">1/10</div><div class="sb-lbl">Soal</div></div>
+    </div>
+
+    <div class="kelas-wrap">
+      <button class="kelas-btn active" onclick="setKelas(1,this)">📗 Kelas 1</button>
+      <button class="kelas-btn" onclick="setKelas(2,this)">📘 Kelas 2</button>
+      <button class="kelas-btn" onclick="setKelas(3,this)">📙 Kelas 3</button>
+      <button class="kelas-btn" onclick="setKelas(4,this)">📕 Kelas 4</button>
+      <button class="kelas-btn" onclick="setKelas(5,this)">📓 Kelas 5</button>
+      <button class="kelas-btn" onclick="setKelas(6,this)">📔 Kelas 6</button>
+    </div>
+
+    <div class="progress-label">
+      <span id="prog-label">Soal 1 dari 10</span>
+      <span id="prog-pct">10%</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progressBar" style="width:10%"></div>
+    </div>
+
+    <div id="soal-area"></div>
+  </div>
+
+  <!-- MATERI -->
+  <div id="tab-materi" style="display:none">
+    <div class="kelas-wrap" style="margin-bottom:16px">
+      <button class="kelas-btn active" onclick="setMateriKelas(1,this)">Kelas 1</button>
+      <button class="kelas-btn" onclick="setMateriKelas(2,this)">Kelas 2</button>
+      <button class="kelas-btn" onclick="setMateriKelas(3,this)">Kelas 3</button>
+      <button class="kelas-btn" onclick="setMateriKelas(4,this)">Kelas 4</button>
+      <button class="kelas-btn" onclick="setMateriKelas(5,this)">Kelas 5</button>
+      <button class="kelas-btn" onclick="setMateriKelas(6,this)">Kelas 6</button>
+    </div>
+    <div id="materi-area"></div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   BANK SOAL — 300 SOAL BAHASA INDONESIA SD/MI
+   50 soal per kelas (kelas 1–6)
+══════════════════════════════════════════════ */
+
+const SOAL = {
+
+/* ────────────────── KELAS 1 ────────────────── */
+1: [
+  // Huruf vokal & konsonan
+  {em:'🔤',sub:'Huruf Vokal',diff:'mudah',
+   q:'Manakah yang termasuk huruf vokal?',
+   opts:['B','K','A','T'], ans:2,
+   p:'Huruf vokal adalah: a, i, u, e, o. Huruf A adalah vokal.'},
+  {em:'🔤',sub:'Huruf Vokal',diff:'mudah',
+   q:'Berapa banyak huruf vokal dalam alfabet?',
+   opts:['3','4','5','6'], ans:2,
+   p:'Huruf vokal ada 5: a, i, u, e, o.'},
+  {em:'🔤',sub:'Huruf Konsonan',diff:'mudah',
+   q:'Yang bukan huruf vokal adalah ...',
+   opts:['A','I','B','U'], ans:2,
+   p:'B adalah huruf konsonan, bukan vokal.'},
+  {em:'🔤',sub:'Huruf Vokal',diff:'mudah',
+   q:'Kata "ibu" memiliki berapa huruf vokal?',
+   opts:['1','2','3','4'], ans:1,
+   p:'i-b-u: huruf vokal ada 2 yaitu i dan u.'},
+  {em:'📝',sub:'Suku Kata',diff:'mudah',
+   q:'Suku kata dari kata "buku" adalah ...',
+   opts:['bu-ku','buk-u','b-uku','buku'], ans:0,
+   p:'"Buku" dibagi menjadi dua suku kata: bu-ku.'},
+  {em:'📝',sub:'Suku Kata',diff:'mudah',
+   q:'Suku kata dari kata "mata" adalah ...',
+   opts:['mat-a','ma-ta','m-ata','mata'], ans:1,
+   p:'"Mata" dibagi menjadi: ma-ta.'},
+  {em:'📝',sub:'Membaca Kata',diff:'mudah',
+   q:'Gambar seekor hewan yang meong-meong disebut ...',
+   opts:['Anjing','Kucing','Burung','Ikan'], ans:1,
+   p:'Hewan yang berbunyi meong adalah kucing.'},
+  {em:'🏠',sub:'Kosakata',diff:'mudah',
+   q:'Tempat kita belajar di sekolah disebut ...',
+   opts:['Kamar','Dapur','Kelas','Taman'], ans:2,
+   p:'Ruangan untuk belajar di sekolah disebut kelas.'},
+  {em:'👨‍👩‍👧',sub:'Kosakata Keluarga',diff:'mudah',
+   q:'Orang tua perempuan kita disebut ...',
+   opts:['Ayah','Kakak','Nenek','Ibu'], ans:3,
+   p:'Orang tua perempuan kita disebut ibu.'},
+  {em:'👨‍👩‍👧',sub:'Kosakata Keluarga',diff:'mudah',
+   q:'Saudara laki-laki yang lebih tua disebut ...',
+   opts:['Adik','Kakak','Paman','Kakek'], ans:1,
+   p:'Saudara laki-laki yang lebih tua disebut kakak.'},
+  // Membaca kalimat pendek
+  {em:'📖',sub:'Membaca',diff:'mudah',
+   ctx:'Ani pergi ke sekolah setiap pagi.',
+   q:'Ke mana Ani pergi setiap pagi?',
+   opts:['Pasar','Sekolah','Rumah','Taman'], ans:1,
+   p:'Berdasarkan kalimat tersebut, Ani pergi ke sekolah setiap pagi.'},
+  {em:'📖',sub:'Membaca',diff:'mudah',
+   ctx:'Budi makan nasi di rumah.',
+   q:'Di mana Budi makan nasi?',
+   opts:['Sekolah','Pasar','Rumah','Taman'], ans:2,
+   p:'Berdasarkan kalimat, Budi makan nasi di rumah.'},
+  {em:'📖',sub:'Kalimat Perintah',diff:'sedang',
+   q:'Kalimat perintah yang sopan adalah ...',
+   opts:['Ambil itu!','Tolong ambilkan buku itu!','Cepat ambil!','Ambil sekarang!'], ans:1,
+   p:'Kalimat perintah yang sopan menggunakan kata "tolong".'},
+  {em:'🙏',sub:'Salam',diff:'mudah',
+   q:'Saat bertemu teman di pagi hari, kita mengucapkan ...',
+   opts:['Selamat malam','Selamat siang','Selamat pagi','Sampai jumpa'], ans:2,
+   p:'Saat bertemu di pagi hari kita mengucapkan "Selamat pagi".'},
+  {em:'🙏',sub:'Perkenalan',diff:'mudah',
+   q:'Saat berkenalan, kita menyebutkan ...',
+   opts:['Nilai rapor','Nama kita','Uang jajan','Warna baju'], ans:1,
+   p:'Saat berkenalan, kita menyebutkan nama kita kepada orang lain.'},
+  // Anggota tubuh
+  {em:'👀',sub:'Anggota Tubuh',diff:'mudah',
+   q:'Anggota tubuh yang digunakan untuk melihat adalah ...',
+   opts:['Telinga','Hidung','Mata','Mulut'], ans:2,
+   p:'Kita menggunakan mata untuk melihat.'},
+  {em:'👂',sub:'Anggota Tubuh',diff:'mudah',
+   q:'Anggota tubuh yang digunakan untuk mendengar adalah ...',
+   opts:['Mata','Telinga','Hidung','Tangan'], ans:1,
+   p:'Kita menggunakan telinga untuk mendengar.'},
+  {em:'👃',sub:'Anggota Tubuh',diff:'mudah',
+   q:'Anggota tubuh yang digunakan untuk mencium bau adalah ...',
+   opts:['Mata','Mulut','Kaki','Hidung'], ans:3,
+   p:'Kita menggunakan hidung untuk mencium bau.'},
+  // Huruf kapital & tanda titik
+  {em:'✏️',sub:'Huruf Kapital',diff:'sedang',
+   q:'Penulisan nama orang yang benar adalah ...',
+   opts:['ani','ANI','Ani','aNi'], ans:2,
+   p:'Nama orang selalu ditulis dengan huruf kapital di awal: Ani.'},
+  {em:'✏️',sub:'Tanda Titik',diff:'sedang',
+   q:'Tanda baca yang digunakan di akhir kalimat pernyataan adalah ...',
+   opts:['Tanda tanya (?)','Tanda seru (!)','Tanda titik (.)','Tanda koma (,)'], ans:2,
+   p:'Kalimat pernyataan diakhiri dengan tanda titik (.).'},
+  // Dongeng
+  {em:'📕',sub:'Dongeng',diff:'sedang',
+   ctx:'Si Kancil mencuri timun Pak Tani. Pak Tani pun marah.',
+   q:'Siapa yang mencuri timun?',
+   opts:['Pak Tani','Si Kancil','Si Kelinci','Si Kura-kura'], ans:1,
+   p:'Berdasarkan cerita, Si Kancil yang mencuri timun.'},
+  {em:'📕',sub:'Dongeng',diff:'sedang',
+   ctx:'Kura-kura dan kelinci berlomba lari. Kura-kura menang karena tidak berhenti.',
+   q:'Mengapa kura-kura menang?',
+   opts:['Karena berlari cepat','Karena tidak berhenti','Karena curang','Karena dibantu teman'], ans:1,
+   p:'Kura-kura menang karena ia terus berjalan dan tidak berhenti.'},
+  // Puisi anak
+  {em:'🌸',sub:'Puisi Anak',diff:'sedang',
+   q:'Puisi anak biasanya berisi tentang ...',
+   opts:['Politik','Alam, keluarga, dan kehidupan anak','Berita','Hukum'], ans:1,
+   p:'Puisi anak biasanya membahas tema yang dekat dengan kehidupan anak seperti alam dan keluarga.'},
+  // Lawan kata
+  {em:'🔄',sub:'Lawan Kata',diff:'sedang',
+   q:'Lawan kata dari "besar" adalah ...',
+   opts:['Panjang','Tinggi','Kecil','Banyak'], ans:2,
+   p:'Lawan kata besar adalah kecil.'},
+  {em:'🔄',sub:'Lawan Kata',diff:'sedang',
+   q:'Lawan kata dari "pagi" adalah ...',
+   opts:['Siang','Sore','Malam','Subuh'], ans:2,
+   p:'Lawan kata pagi adalah malam.'},
+  {em:'🔄',sub:'Lawan Kata',diff:'sedang',
+   q:'Lawan kata dari "naik" adalah ...',
+   opts:['Jalan','Turun','Berlari','Tinggi'], ans:1,
+   p:'Lawan kata naik adalah turun.'},
+  // Kosakata sekolah
+  {em:'🏫',sub:'Kosakata Sekolah',diff:'mudah',
+   q:'Alat yang digunakan untuk menulis di papan tulis adalah ...',
+   opts:['Pensil','Kapur tulis','Spidol kertas','Krayon'], ans:1,
+   p:'Di papan tulis biasanya digunakan kapur tulis atau spidol papan tulis.'},
+  {em:'🎒',sub:'Kosakata Sekolah',diff:'mudah',
+   q:'Tempat menyimpan buku dan alat tulis saat ke sekolah adalah ...',
+   opts:['Koper','Tas sekolah','Kotak makan','Dompet'], ans:1,
+   p:'Kita menyimpan buku dan alat tulis dalam tas sekolah.'},
+  // HOTS sederhana
+  {em:'💭',sub:'Membaca',diff:'sulit',
+   ctx:'Setiap pagi Sari menyiram bunga di halaman. Bunga itu tumbuh subur dan indah.',
+   q:'Mengapa bunga Sari tumbuh subur?',
+   opts:['Karena mendapat pupuk mahal','Karena Sari rajin menyiramnya','Karena cuaca panas','Karena dipindah ke pot baru'], ans:1,
+   p:'Dari cerita tersebut, bunga tumbuh subur karena Sari rajin menyiramnya setiap pagi.'},
+  {em:'💭',sub:'Cerita',diff:'sulit',
+   ctx:'Riko tidak mengerjakan PR. Guru pun memberikan nilai merah.',
+   q:'Akibat Riko tidak mengerjakan PR adalah ...',
+   opts:['Mendapat pujian guru','Mendapat nilai bagus','Mendapat nilai merah','Dipuji teman-teman'], ans:2,
+   p:'Akibat tidak mengerjakan PR, Riko mendapat nilai merah dari guru.'},
+  // Melengkapi kata
+  {em:'📝',sub:'Melengkapi Kata',diff:'sedang',
+   q:'Bu ... mengajar di kelas kami. (isi titik-titik dengan profesi)',
+   opts:['Dokter','Polisi','Guru','Petani'], ans:2,
+   p:'Yang mengajar di kelas adalah guru.'},
+  {em:'📝',sub:'Melengkapi Kalimat',diff:'sedang',
+   q:'Kami bermain di ... sekolah.',
+   opts:['Dapur','Halaman','Kamar mandi','Garasi'], ans:1,
+   p:'Anak-anak biasanya bermain di halaman sekolah.'},
+  // Tambahan kelas 1
+  {em:'🌟',sub:'Kosakata',diff:'mudah',
+   q:'Warna langit pada siang hari adalah ...',
+   opts:['Hitam','Merah','Biru','Hijau'], ans:2,
+   p:'Langit pada siang hari berwarna biru.'},
+  {em:'🍎',sub:'Kosakata',diff:'mudah',
+   q:'Buah berwarna merah yang rasanya manis dan sering ada di cerita Putri Salju adalah ...',
+   opts:['Mangga','Apel','Jeruk','Pisang'], ans:1,
+   p:'Buah berwarna merah yang dimaksud adalah apel.'},
+  {em:'📖',sub:'Membaca',diff:'mudah',
+   q:'Kita membaca buku menggunakan ...',
+   opts:['Telinga','Hidung','Mata','Kaki'], ans:2,
+   p:'Membaca buku menggunakan mata.'},
+  {em:'✏️',sub:'Menulis',diff:'mudah',
+   q:'Alat yang digunakan untuk menulis di buku adalah ...',
+   opts:['Penghapus','Pensil atau bolpoin','Gunting','Penggaris'], ans:1,
+   p:'Untuk menulis di buku kita menggunakan pensil atau bolpoin.'},
+  {em:'🔤',sub:'Huruf',diff:'mudah',
+   q:'Huruf pertama dalam alfabet adalah ...',
+   opts:['B','Z','A','M'], ans:2,
+   p:'Huruf pertama dalam alfabet adalah A.'},
+  {em:'🔤',sub:'Huruf',diff:'mudah',
+   q:'Huruf terakhir dalam alfabet adalah ...',
+   opts:['X','Y','W','Z'], ans:3,
+   p:'Huruf terakhir dalam alfabet adalah Z.'},
+  {em:'📖',sub:'Kalimat',diff:'sedang',
+   q:'Kalimat yang berisi pertanyaan diakhiri dengan ...',
+   opts:['Tanda titik (.)','Tanda seru (!)','Tanda tanya (?)','Tanda koma (,)'], ans:2,
+   p:'Kalimat tanya diakhiri dengan tanda tanya (?).'},
+  {em:'🌺',sub:'Puisi',diff:'sedang',
+   ctx:'Ibu...\nKau selalu ada untukku\nKau selalu menyayangiku',
+   q:'Puisi di atas menceritakan tentang ...',
+   opts:['Teman','Guru','Ibu','Ayah'], ans:2,
+   p:'Puisi tersebut menceritakan tentang ibu yang selalu ada dan menyayangi.'},
+  {em:'🔄',sub:'Lawan Kata',diff:'sedang',
+   q:'Lawan kata "rajin" adalah ...',
+   opts:['Pintar','Malas','Cantik','Baik'], ans:1,
+   p:'Lawan kata rajin adalah malas.'},
+  {em:'🔄',sub:'Lawan Kata',diff:'sedang',
+   q:'Lawan kata "terang" adalah ...',
+   opts:['Siang','Matahari','Gelap','Lampu'], ans:2,
+   p:'Lawan kata terang adalah gelap.'},
+  {em:'📝',sub:'Suku Kata',diff:'mudah',
+   q:'Kata "mama" terdiri dari berapa suku kata?',
+   opts:['1','2','3','4'], ans:1,
+   p:'"Mama" terdiri dari 2 suku kata: ma-ma.'},
+  {em:'📝',sub:'Suku Kata',diff:'mudah',
+   q:'Suku kata dari "sekolah" yang benar adalah ...',
+   opts:['s-ekolah','se-ko-lah','sek-olah','sko-lah'], ans:1,
+   p:'"Sekolah" dibagi menjadi: se-ko-lah (3 suku kata).'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Kita harus menggunakan huruf kapital untuk menulis ...',
+   opts:['Semua kata dalam kalimat','Nama orang dan awal kalimat','Kata sifat saja','Kata benda saja'], ans:1,
+   p:'Huruf kapital digunakan di awal kalimat dan untuk menulis nama orang/tempat.'},
+  {em:'🏫',sub:'Kosakata',diff:'mudah',
+   q:'Orang yang bekerja mengajar di sekolah adalah ...',
+   opts:['Dokter','Pedagang','Guru','Polisi'], ans:2,
+   p:'Orang yang pekerjaannya mengajar di sekolah disebut guru.'},
+  {em:'📖',sub:'Membaca',diff:'sedang',
+   ctx:'Doni suka membaca buku cerita. Setiap malam ia membaca sebelum tidur.',
+   q:'Kapan Doni membaca buku?',
+   opts:['Pagi hari','Siang hari','Setiap malam sebelum tidur','Saat di sekolah'], ans:2,
+   p:'Berdasarkan cerita, Doni membaca buku setiap malam sebelum tidur.'},
+],
+
+/* ────────────────── KELAS 2 ────────────────── */
+2: [
+  {em:'📖',sub:'Kalimat Tanya',diff:'mudah',
+   q:'Kata tanya yang digunakan untuk menanyakan tempat adalah ...',
+   opts:['Siapa','Kapan','Di mana','Mengapa'], ans:2,
+   p:'"Di mana" digunakan untuk menanyakan tempat.'},
+  {em:'📖',sub:'Kalimat Tanya',diff:'mudah',
+   q:'Kata tanya untuk menanyakan waktu adalah ...',
+   opts:['Siapa','Kapan','Di mana','Apa'], ans:1,
+   p:'"Kapan" digunakan untuk menanyakan waktu.'},
+  {em:'📖',sub:'Kalimat Tanya',diff:'mudah',
+   q:'Kata tanya untuk menanyakan alasan adalah ...',
+   opts:['Siapa','Kapan','Di mana','Mengapa'], ans:3,
+   p:'"Mengapa" digunakan untuk menanyakan alasan atau penyebab.'},
+  {em:'📖',sub:'Kalimat Tanya',diff:'sedang',
+   q:'Kata tanya untuk menanyakan orang adalah ...',
+   opts:['Apa','Berapa','Siapa','Bagaimana'], ans:2,
+   p:'"Siapa" digunakan untuk menanyakan orang/pelaku.'},
+  {em:'📕',sub:'Dongeng',diff:'sedang',
+   ctx:'Semut dan belalang: Semut bekerja keras mengumpulkan makanan. Belalang hanya bersenang-senang. Saat musim dingin, belalang kelaparan.',
+   q:'Apa pelajaran dari cerita semut dan belalang?',
+   opts:['Kerja keras itu sia-sia','Bersenang-senanglah selalu','Kita harus rajin bekerja','Semut itu jahat'], ans:2,
+   p:'Pesan cerita ini adalah kita harus rajin bekerja keras seperti semut.'},
+  {em:'📕',sub:'Dongeng',diff:'sedang',
+   q:'Tokoh dalam cerita disebut ...',
+   opts:['Latar','Alur','Tema','Tokoh'], ans:3,
+   p:'Pelaku atau pemeran dalam cerita disebut tokoh.'},
+  {em:'📕',sub:'Cerita',diff:'sedang',
+   q:'Tempat dan waktu terjadinya cerita disebut ...',
+   opts:['Tokoh','Tema','Latar','Alur'], ans:2,
+   p:'Tempat dan waktu cerita disebut latar.'},
+  {em:'🌸',sub:'Puisi',diff:'sedang',
+   q:'Baris-baris dalam puisi disebut ...',
+   opts:['Paragraf','Bait','Kalimat','Alinea'], ans:1,
+   p:'Kumpulan baris dalam puisi disebut bait.'},
+  {em:'✏️',sub:'Huruf Kapital',diff:'sedang',
+   q:'Penulisan yang benar untuk nama kota adalah ...',
+   opts:['jakarta','JAKARTA','Jakarta','jAkArTa'], ans:2,
+   p:'Nama kota ditulis dengan huruf kapital di awal: Jakarta.'},
+  {em:'✏️',sub:'Tanda Baca',diff:'sedang',
+   q:'Tanda baca yang digunakan untuk memisahkan anggota dalam daftar adalah ...',
+   opts:['Tanda titik (.)','Tanda koma (,)','Tanda tanya (?)','Tanda seru (!)'], ans:1,
+   p:'Tanda koma (,) digunakan untuk memisahkan anggota dalam daftar atau rincian.'},
+  {em:'🔄',sub:'Sinonim',diff:'sedang',
+   q:'Sinonim (persamaan kata) dari "cantik" adalah ...',
+   opts:['Jelek','Indah','Buruk','Kotor'], ans:1,
+   p:'Sinonim cantik adalah indah atau elok.'},
+  {em:'🔄',sub:'Sinonim',diff:'sedang',
+   q:'Sinonim dari "besar" adalah ...',
+   opts:['Kecil','Sedang','Raksasa','Tipis'], ans:2,
+   p:'Sinonim besar adalah raksasa atau agung.'},
+  {em:'🔄',sub:'Antonim',diff:'sedang',
+   q:'Antonim (lawan kata) dari "panas" adalah ...',
+   opts:['Hangat','Sejuk','Dingin','Terik'], ans:2,
+   p:'Antonim panas adalah dingin.'},
+  {em:'🔄',sub:'Antonim',diff:'sedang',
+   q:'Antonim dari "pergi" adalah ...',
+   opts:['Jalan','Lari','Pulang','Berangkat'], ans:2,
+   p:'Antonim pergi adalah pulang atau datang.'},
+  {em:'📝',sub:'Menulis Paragraf',diff:'sedang',
+   q:'Setiap paragraf biasanya dimulai dengan ...',
+   opts:['Satu spasi','Penulisan menjorok ke dalam','Huruf kecil','Tanda koma'], ans:1,
+   p:'Paragraf baru ditandai dengan penulisan yang menjorok ke dalam (indentasi).'},
+  {em:'📝',sub:'Kalimat',diff:'mudah',
+   q:'Kalimat yang menyatakan perasaan senang, marah, atau heran diakhiri dengan ...',
+   opts:['Tanda titik','Tanda koma','Tanda tanya','Tanda seru'], ans:3,
+   p:'Kalimat seru atau yang menyatakan perasaan kuat diakhiri dengan tanda seru (!).'},
+  {em:'📖',sub:'Membaca Lancar',diff:'mudah',
+   ctx:'Siti dan Edo pergi ke perpustakaan. Mereka membaca buku bersama.',
+   q:'Ke mana Siti dan Edo pergi?',
+   opts:['Taman','Kantin','Perpustakaan','Kelas'], ans:2,
+   p:'Berdasarkan teks, Siti dan Edo pergi ke perpustakaan.'},
+  {em:'📖',sub:'Membaca Lancar',diff:'sedang',
+   ctx:'Siti dan Edo pergi ke perpustakaan. Mereka membaca buku bersama.',
+   q:'Apa yang dilakukan Siti dan Edo di perpustakaan?',
+   opts:['Bermain games','Makan siang','Tidur siang','Membaca buku bersama'], ans:3,
+   p:'Mereka membaca buku bersama di perpustakaan.'},
+  {em:'✏️',sub:'Kalimat Perintah',diff:'sedang',
+   q:'Contoh kalimat perintah yang benar adalah ...',
+   opts:['Apakah kamu mau makan?','Dia pergi ke sekolah.','Tolong tutup pintu itu!','Saya suka buah.'], ans:2,
+   p:'Kalimat perintah berisi permintaan atau perintah untuk melakukan sesuatu.'},
+  {em:'💭',sub:'Cerita Pengalaman',diff:'sedang',
+   q:'Cerita pengalaman yang baik biasanya ditulis menggunakan kata ...',
+   opts:['Dia, Mereka','Saya, Aku','Kalian','Kami'], ans:1,
+   p:'Cerita pengalaman pribadi ditulis menggunakan sudut pandang orang pertama: Saya atau Aku.'},
+  // HOTS kelas 2
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Rena membeli buku di toko. Buku itu berjudul "Petualangan di Hutan". Rena sangat senang membacanya.',
+   q:'Apa judul buku yang dibeli Rena?',
+   opts:['Petualangan di Laut','Rena di Toko Buku','Petualangan di Hutan','Hutan yang Indah'], ans:2,
+   p:'Berdasarkan teks, judul buku yang dibeli Rena adalah "Petualangan di Hutan".'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Jika sebuah kalimat tidak diawali huruf kapital, maka kalimat itu ...',
+   opts:['Sudah benar','Mengandung kesalahan penulisan','Tidak perlu diperbaiki','Tetap bagus'], ans:1,
+   p:'Setiap kalimat harus diawali huruf kapital. Jika tidak, kalimat itu mengandung kesalahan penulisan.'},
+  {em:'📚',sub:'Perpustakaan',diff:'mudah',
+   q:'Tempat menyimpan dan meminjam buku di sekolah disebut ...',
+   opts:['Kantin','UKS','Perpustakaan','Laboratorium'], ans:2,
+   p:'Perpustakaan adalah tempat menyimpan dan meminjam buku.'},
+  {em:'✏️',sub:'Menulis',diff:'sedang',
+   q:'Penulisan kalimat yang benar adalah ...',
+   opts:['aku suka makan.','Aku suka makan.','Aku Suka Makan.','aku Suka makan.'], ans:1,
+   p:'Kalimat diawali huruf kapital dan diakhiri tanda titik: "Aku suka makan."'},
+  {em:'📝',sub:'Paragraf',diff:'sedang',
+   q:'Sebuah paragraf yang baik berisi kalimat-kalimat yang ...',
+   opts:['Tidak berhubungan','Saling berhubungan dan padu','Berbeda topik','Sangat panjang'], ans:1,
+   p:'Paragraf yang baik terdiri dari kalimat-kalimat yang saling berhubungan dan padu.'},
+  {em:'🔤',sub:'Ejaan',diff:'sedang',
+   q:'Penulisan yang benar untuk nama hari adalah ...',
+   opts:['senin','SENIN','Senin','sEnIn'], ans:2,
+   p:'Nama hari ditulis dengan huruf kapital di awal: Senin, Selasa, dst.'},
+  {em:'📖',sub:'Pemahaman',diff:'sedang',
+   ctx:'Hari ini adalah hari Senin. Upacara bendera diadakan setiap Senin pagi.',
+   q:'Kapan upacara bendera diadakan?',
+   opts:['Setiap hari','Setiap Jumat pagi','Setiap Senin pagi','Setiap Sabtu'], ans:2,
+   p:'Berdasarkan teks, upacara bendera diadakan setiap Senin pagi.'},
+  {em:'🌸',sub:'Puisi',diff:'sedang',
+   q:'Ciri-ciri puisi anak adalah ...',
+   opts:['Menggunakan bahasa ilmiah','Bahasa indah dan bermakna','Berisi data dan fakta','Menggunakan istilah asing'], ans:1,
+   p:'Puisi menggunakan bahasa yang indah dan penuh makna untuk menyampaikan perasaan.'},
+  {em:'📕',sub:'Dongeng',diff:'sedang',
+   q:'Dalam dongeng binatang (fabel), binatang digambarkan bisa ...',
+   opts:['Terbang','Berbicara seperti manusia','Berubah menjadi manusia','Berhitung'], ans:1,
+   p:'Dalam fabel, binatang digambarkan bisa berbicara dan berpikir seperti manusia.'},
+  {em:'📚',sub:'Membaca',diff:'mudah',
+   q:'Manfaat membaca buku adalah ...',
+   opts:['Membuat mata lelah','Membuang waktu','Menambah pengetahuan','Membuat mengantuk'], ans:2,
+   p:'Membaca buku bermanfaat untuk menambah pengetahuan dan wawasan.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Hani tidak datang ke sekolah kemarin karena sakit. Hari ini Hani sudah sembuh dan masuk sekolah.',
+   q:'Mengapa Hani tidak masuk sekolah kemarin?',
+   opts:['Hani malas','Hani pergi liburan','Hani sakit','Hani membantu ibu'], ans:2,
+   p:'Berdasarkan teks, Hani tidak masuk sekolah kemarin karena sakit.'},
+  {em:'✏️',sub:'Penulisan',diff:'sedang',
+   q:'Kalimat tanya yang benar diakhiri dengan ...',
+   opts:['Tanda titik (.)','Tanda koma (,)','Tanda tanya (?)','Tanda seru (!)'], ans:2,
+   p:'Kalimat tanya selalu diakhiri dengan tanda tanya (?).'},
+],
+
+/* ────────────────── KELAS 3 ────────────────── */
+3: [
+  {em:'📖',sub:'Ide Pokok',diff:'sedang',
+   ctx:'Kupu-kupu adalah serangga yang indah. Sayapnya berwarna-warni. Kupu-kupu hinggap di bunga untuk menghisap madu.',
+   q:'Ide pokok paragraf di atas adalah ...',
+   opts:['Bunga yang indah','Kupu-kupu adalah serangga yang indah','Madu yang manis','Serangga di taman'], ans:1,
+   p:'Ide pokok adalah gagasan utama paragraf. Kalimat pertama menyatakan ide pokok: "Kupu-kupu adalah serangga yang indah."'},
+  {em:'📖',sub:'Kalimat Utama',diff:'sedang',
+   q:'Kalimat utama biasanya terletak di ...',
+   opts:['Tengah paragraf saja','Awal atau akhir paragraf','Seluruh baris','Tidak ada aturan'], ans:1,
+   p:'Kalimat utama umumnya terletak di awal atau akhir paragraf.'},
+  {em:'📖',sub:'Membaca Pemahaman',diff:'sedang',
+   ctx:'Pak Budi adalah seorang petani. Setiap hari ia pergi ke sawah untuk menanam padi. Hasil panen dijual ke pasar.',
+   q:'Apa pekerjaan Pak Budi?',
+   opts:['Pedagang','Nelayan','Petani','Peternak'], ans:2,
+   p:'Berdasarkan teks, pekerjaan Pak Budi adalah petani.'},
+  {em:'📖',sub:'Membaca Pemahaman',diff:'sedang',
+   ctx:'Pak Budi adalah seorang petani. Setiap hari ia pergi ke sawah untuk menanam padi. Hasil panen dijual ke pasar.',
+   q:'Di mana Pak Budi menjual hasil panennya?',
+   opts:['Di sawah','Di rumah','Di pasar','Di sekolah'], ans:2,
+   p:'Berdasarkan teks, hasil panen Pak Budi dijual ke pasar.'},
+  {em:'✏️',sub:'Imbuhan',diff:'sedang',
+   q:'Kata "berlari" terbentuk dari kata dasar "lari" dengan imbuhan ...',
+   opts:['me-','ber-','pe-','ter-'], ans:1,
+   p:'"Berlari" = ber- + lari. Imbuhan ber- menyatakan melakukan aktivitas.'},
+  {em:'✏️',sub:'Imbuhan',diff:'sedang',
+   q:'Kata "memukul" terbentuk dari kata dasar ...',
+   opts:['Memul','Pukul','Mukul','Emukul'], ans:1,
+   p:'"Memukul" = me- + pukul. Kata dasarnya adalah "pukul".'},
+  {em:'✏️',sub:'Imbuhan',diff:'sedang',
+   q:'Imbuhan "me-" pada kata "menulis" berfungsi untuk menyatakan ...',
+   opts:['Keadaan','Melakukan pekerjaan','Hasil pekerjaan','Pelaku'], ans:1,
+   p:'Imbuhan me- menyatakan perbuatan/pekerjaan yang sedang dilakukan.'},
+  {em:'📕',sub:'Menulis Cerita',diff:'sedang',
+   q:'Urutan yang benar dalam struktur cerita adalah ...',
+   opts:['Tengah-awal-akhir','Akhir-tengah-awal','Awal-tengah-akhir','Awal-akhir-tengah'], ans:2,
+   p:'Struktur cerita yang benar: awal (perkenalan) – tengah (masalah) – akhir (penyelesaian).'},
+  {em:'📕',sub:'Dongeng',diff:'sedang',
+   q:'Pesan yang ingin disampaikan pengarang dalam cerita disebut ...',
+   opts:['Tokoh','Latar','Alur','Amanat'], ans:3,
+   p:'Pesan moral atau pelajaran dalam cerita disebut amanat.'},
+  {em:'🌸',sub:'Puisi',diff:'sedang',
+   q:'Penggunaan bahasa kias dalam puisi, seperti "jantungku berdegup kencang", disebut ...',
+   opts:['Rima','Majas','Bait','Sajak'], ans:1,
+   p:'Bahasa kias atau perumpamaan dalam puisi disebut majas.'},
+  {em:'💬',sub:'Wawancara',diff:'sedang',
+   q:'Dalam wawancara, orang yang menjawab pertanyaan disebut ...',
+   opts:['Pewawancara','Narasumber','Reporter','Penonton'], ans:1,
+   p:'Orang yang menjawab pertanyaan dalam wawancara disebut narasumber.'},
+  {em:'💬',sub:'Wawancara',diff:'sedang',
+   q:'Sebelum melakukan wawancara, yang perlu dipersiapkan adalah ...',
+   opts:['Pakaian mewah','Daftar pertanyaan','Makanan','Banyak uang'], ans:1,
+   p:'Sebelum wawancara, kita harus menyiapkan daftar pertanyaan yang akan ditanyakan.'},
+  {em:'🔄',sub:'Sinonim',diff:'sedang',
+   q:'Sinonim kata "pintar" adalah ...',
+   opts:['Bodoh','Nakal','Cerdas','Malas'], ans:2,
+   p:'Sinonim pintar adalah cerdas, pandai, atau cakap.'},
+  {em:'🔄',sub:'Antonim',diff:'sedang',
+   q:'Antonim kata "sering" adalah ...',
+   opts:['Selalu','Kadang-kadang','Jarang','Biasanya'], ans:2,
+   p:'Antonim sering adalah jarang.'},
+  {em:'📝',sub:'Penggunaan Kata',diff:'sedang',
+   q:'Kata "dan" dalam kalimat berfungsi sebagai ...',
+   opts:['Kata tanya','Kata seru','Kata penghubung','Kata keterangan'], ans:2,
+   p:'"Dan" adalah kata penghubung (konjungsi) yang menghubungkan dua bagian kalimat.'},
+  {em:'📝',sub:'Kalimat',diff:'sedang',
+   q:'Kalimat "Andi dan Budi pergi ke sekolah" mengandung berapa subjek?',
+   opts:['1','2','3','4'], ans:1,
+   p:'Subjek dalam kalimat tersebut adalah "Andi dan Budi" — dua orang, tapi tetap satu subjek gabungan.'},
+  {em:'📖',sub:'Pemahaman',diff:'sulit',
+   ctx:'Tanaman memerlukan air, sinar matahari, dan tanah yang subur untuk tumbuh. Tanpa salah satu unsur itu, tanaman bisa layu.',
+   q:'Apa yang terjadi jika tanaman tidak mendapat air?',
+   opts:['Tumbuh subur','Berbunga lebat','Bisa layu','Menjadi hijau'], ans:2,
+   p:'Berdasarkan teks, tanpa salah satu unsur (termasuk air), tanaman bisa layu.'},
+  {em:'✏️',sub:'Ejaan',diff:'sedang',
+   q:'Penulisan yang benar untuk nama bulan adalah ...',
+   opts:['januari','JANUARI','Januari','jAnUaRi'], ans:2,
+   p:'Nama bulan ditulis dengan huruf kapital di awal: Januari, Februari, dst.'},
+  {em:'📝',sub:'Kalimat',diff:'mudah',
+   q:'Unsur paling utama dalam sebuah kalimat adalah ...',
+   opts:['Objek dan keterangan','Subjek dan predikat','Keterangan waktu','Tanda baca'], ans:1,
+   p:'Kalimat minimal harus memiliki subjek (pelaku) dan predikat (tindakan).'},
+  {em:'🌸',sub:'Puisi',diff:'sedang',
+   q:'Persamaan bunyi di akhir baris puisi disebut ...',
+   opts:['Bait','Tema','Rima/sajak','Majas'], ans:2,
+   p:'Persamaan bunyi di akhir baris puisi disebut rima atau sajak.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Rina ingin menulis cerita tentang pengalamannya berlibur ke pantai. Ia melihat ombak besar, ikan-ikan kecil, dan matahari terbenam.',
+   q:'Apa yang sebaiknya dijadikan judul cerita Rina?',
+   opts:['Belajar Matematika','Liburanku di Pantai','Hari di Sekolah','Bermain Hujan'], ans:1,
+   p:'Judul yang paling sesuai dengan pengalaman berlibur ke pantai adalah "Liburanku di Pantai".'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Mengapa kita perlu membaca kembali tulisan kita sebelum dikumpulkan?',
+   opts:['Agar terlihat rajin','Untuk memperbaiki kesalahan','Agar tulisan tambah kotor','Tidak perlu'], ans:1,
+   p:'Membaca kembali tulisan penting untuk menemukan dan memperbaiki kesalahan ejaan atau isi.'},
+  {em:'📖',sub:'Membaca',diff:'sedang',
+   ctx:'Hutan adalah paru-paru dunia. Pohon-pohon di hutan menghasilkan oksigen yang kita hirup.',
+   q:'Mengapa hutan disebut paru-paru dunia?',
+   opts:['Karena ada banyak hewan','Karena pohonnya menghasilkan oksigen','Karena letaknya di hulu','Karena ada sungai'], ans:1,
+   p:'Hutan disebut paru-paru dunia karena pohon-pohonnya menghasilkan oksigen.'},
+  {em:'✏️',sub:'Imbuhan',diff:'sulit',
+   q:'Kata "pelajar" berasal dari kata dasar "ajar" dengan imbuhan ...',
+   opts:['pe- saja','me-','pe-...-an','pe-...-ar'], ans:0,
+   p:'"Pelajar" = pe- + ajar → pe- + lajar (dengan sisipan "l"). Secara sederhana, imbuhan pe- ditambahkan pada kata "ajar".'},
+  {em:'📖',sub:'Ide Pokok',diff:'sulit',
+   ctx:'Buah-buahan sangat baik untuk kesehatan. Buah mengandung vitamin dan serat. Dokter menyarankan makan buah setiap hari.',
+   q:'Kalimat yang merupakan ide pokok paragraf adalah ...',
+   opts:['Buah mengandung vitamin','Dokter menyarankan makan buah','Buah-buahan sangat baik untuk kesehatan','Serat baik untuk pencernaan'], ans:2,
+   p:'Ide pokok ada di kalimat pertama: "Buah-buahan sangat baik untuk kesehatan."'},
+  {em:'📝',sub:'Penulisan',diff:'sedang',
+   q:'Penggunaan kata "di" yang benar sebagai kata depan adalah ...',
+   opts:['Dipasar','Di pasar','DiPasar','Dipasar'], ans:1,
+   p:'"Di" sebagai kata depan penunjuk tempat ditulis terpisah: "di pasar", "di sekolah".'},
+  {em:'📝',sub:'Penulisan',diff:'sedang',
+   q:'Penulisan yang benar: "Ibu memasak di dapur" atau "Ibu memasak didapur"?',
+   opts:['Ibu memasak didapur','Ibu memasak di dapur','Sama saja','Tidak ada yang benar'], ans:1,
+   p:'"Di" sebagai kata depan tempat ditulis terpisah: "di dapur".'},
+  {em:'💬',sub:'Kosakata',diff:'sedang',
+   q:'Kata "gemilang" memiliki arti yang sama dengan ...',
+   opts:['Gelap','Cemerlang/bersinar','Redup','Lusuh'], ans:1,
+   p:'"Gemilang" berarti cemerlang, bersinar, atau sangat bagus.'},
+  {em:'📕',sub:'Tokoh Cerita',diff:'sedang',
+   q:'Tokoh yang berperilaku jahat dalam cerita disebut tokoh ...',
+   opts:['Protagonis','Tritagonis','Antagonis','Figuran'], ans:2,
+   p:'Tokoh jahat/penentang dalam cerita disebut antagonis. Tokoh baik disebut protagonis.'},
+  {em:'📕',sub:'Tokoh Cerita',diff:'sedang',
+   q:'Tokoh utama yang berperan baik dalam cerita disebut ...',
+   opts:['Antagonis','Protagonis','Figuran','Tritagonis'], ans:1,
+   p:'Tokoh baik/utama dalam cerita disebut protagonis.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Danu selalu membuang sampah sembarangan. Suatu hari banjir melanda desa mereka.',
+   q:'Apa kemungkinan hubungan antara kebiasaan Danu dan banjir?',
+   opts:['Tidak ada hubungannya','Banjir karena hujan saja','Sampah menyumbat saluran air sehingga banjir','Banjir karena tanah longsor'], ans:2,
+   p:'Sampah yang dibuang sembarangan dapat menyumbat saluran air sehingga menyebabkan banjir.'},
+],
+
+/* ────────────────── KELAS 4 ────────────────── */
+4: [
+  {em:'📖',sub:'Gagasan Pokok',diff:'sedang',
+   ctx:'Indonesia adalah negara kepulauan terbesar di dunia. Wilayahnya terdiri dari lebih dari 17.000 pulau. Dari Sabang sampai Merauke terbentang luas.',
+   q:'Gagasan pokok paragraf tersebut adalah ...',
+   opts:['Wilayah Indonesia sangat luas','Indonesia memiliki banyak budaya','Indonesia adalah negara kepulauan terbesar','Pulau-pulau Indonesia sangat indah'], ans:2,
+   p:'Gagasan pokok berada di kalimat pertama: "Indonesia adalah negara kepulauan terbesar di dunia."'},
+  {em:'📝',sub:'Ringkasan',diff:'sedang',
+   q:'Membuat ringkasan teks berarti ...',
+   opts:['Menyalin teks secara utuh','Menghilangkan seluruh isi','Mengambil inti/pokok teks dengan bahasa sendiri','Menambahkan cerita baru'], ans:2,
+   p:'Ringkasan adalah pengambilan inti/pokok isi teks menggunakan bahasa kita sendiri.'},
+  {em:'📋',sub:'Teks Petunjuk',diff:'sedang',
+   q:'Teks petunjuk berisi ...',
+   opts:['Cerita imajinatif','Langkah-langkah melakukan sesuatu','Pendapat seseorang','Data dan grafik'], ans:1,
+   p:'Teks petunjuk (prosedur) berisi langkah-langkah atau cara melakukan sesuatu.'},
+  {em:'📋',sub:'Teks Petunjuk',diff:'sedang',
+   q:'Ciri teks petunjuk adalah menggunakan kata ...',
+   opts:['Mungkin, barangkali','Pertama, kedua, kemudian, lalu','Menurutku, menurut saya','Padahal, namun'], ans:1,
+   p:'Teks petunjuk menggunakan kata urutan seperti: pertama, kedua, kemudian, lalu, terakhir.'},
+  {em:'🎭',sub:'Pantun',diff:'sedang',
+   q:'Pantun terdiri dari berapa baris dalam satu bait?',
+   opts:['2 baris','3 baris','4 baris','5 baris'], ans:2,
+   p:'Satu bait pantun terdiri dari 4 baris: 2 baris sampiran dan 2 baris isi.'},
+  {em:'🎭',sub:'Pantun',diff:'sedang',
+   q:'Dua baris pertama dalam pantun disebut ...',
+   opts:['Isi','Sajak','Sampiran','Bait'], ans:2,
+   p:'Dua baris pertama dalam pantun disebut sampiran, dua baris terakhir disebut isi.'},
+  {em:'🎭',sub:'Pantun',diff:'sedang',
+   q:'Pantun yang benar memiliki pola rima ...',
+   opts:['a-a-a-a','a-b-c-d','a-b-a-b','a-a-b-b'], ans:2,
+   p:'Pola rima pantun adalah a-b-a-b (baris 1 & 3 berima, baris 2 & 4 berima).'},
+  {em:'🌸',sub:'Puisi',diff:'sedang',
+   q:'Perbedaan utama puisi dan pantun adalah ...',
+   opts:['Puisi lebih pendek','Pantun punya sampiran dan isi, puisi bebas','Puisi memiliki rima wajib','Pantun lebih panjang'], ans:1,
+   p:'Pantun memiliki aturan sampiran-isi dan rima a-b-a-b, sedangkan puisi lebih bebas.'},
+  {em:'📚',sub:'Fiksi & Nonfiksi',diff:'sedang',
+   q:'Contoh teks fiksi adalah ...',
+   opts:['Buku pelajaran','Kamus','Ensiklopedia','Cerita dongeng'], ans:3,
+   p:'Teks fiksi adalah teks yang berisi cerita khayalan/rekaan, contohnya dongeng dan novel.'},
+  {em:'📚',sub:'Fiksi & Nonfiksi',diff:'sedang',
+   q:'Contoh teks nonfiksi adalah ...',
+   opts:['Novel','Dongeng','Biografi tokoh','Cerpen'], ans:2,
+   p:'Teks nonfiksi berisi informasi nyata/faktual, contohnya biografi, ensiklopedia, dan laporan.'},
+  {em:'✏️',sub:'Tanda Baca',diff:'sedang',
+   q:'Tanda baca yang digunakan untuk memisahkan anak kalimat dari induk kalimat adalah ...',
+   opts:['Tanda titik (.)','Tanda koma (,)','Tanda tanya (?)','Tanda titik dua (:)'], ans:1,
+   p:'Tanda koma (,) digunakan untuk memisahkan anak kalimat yang mendahului induk kalimat.'},
+  {em:'✏️',sub:'Ejaan',diff:'sedang',
+   q:'Penulisan yang benar adalah ...',
+   opts:['Ibu membeli sayur dipasar','Ibu membeli sayur di pasar','Ibu membeli sayur Di Pasar','ibu membeli sayur di pasar'], ans:1,
+   p:'Penulisan yang benar: huruf kapital di awal kalimat, "di" kata depan dipisah.'},
+  {em:'📝',sub:'Paragraf',diff:'sedang',
+   q:'Kalimat penjelas dalam paragraf berfungsi untuk ...',
+   opts:['Menyatakan ide pokok','Mengakhiri paragraf','Menjelaskan dan mendukung ide pokok','Memulai paragraf baru'], ans:2,
+   p:'Kalimat penjelas bertugas menjelaskan dan memberikan detail pendukung untuk ide pokok.'},
+  {em:'📖',sub:'Wawancara',diff:'sedang',
+   q:'Etika yang benar saat melakukan wawancara adalah ...',
+   opts:['Memotong pembicaraan narasumber','Mendengarkan dengan saksama','Bermain HP saat wawancara','Tidak membuat pertanyaan dulu'], ans:1,
+   p:'Saat wawancara, kita harus mendengarkan narasumber dengan saksama dan sopan.'},
+  {em:'📖',sub:'Pemahaman',diff:'sulit',
+   ctx:'Sampah plastik menjadi masalah besar di lautan. Ribuan ton plastik masuk ke laut setiap tahunnya. Hewan-hewan laut terancam karena memakan plastik.',
+   q:'Apa dampak sampah plastik di laut berdasarkan teks?',
+   opts:['Laut menjadi bersih','Ikan-ikan bertambah banyak','Hewan laut terancam','Nelayan semakin kaya'], ans:2,
+   p:'Berdasarkan teks, dampak sampah plastik adalah hewan-hewan laut terancam karena memakan plastik.'},
+  {em:'📖',sub:'Pemahaman',diff:'sulit',
+   ctx:'Sampah plastik menjadi masalah besar di lautan. Ribuan ton plastik masuk ke laut setiap tahunnya. Hewan-hewan laut terancam karena memakan plastik.',
+   q:'Solusi terbaik untuk masalah dalam teks di atas adalah ...',
+   opts:['Membuang lebih banyak plastik ke laut','Mengurangi penggunaan plastik','Membiarkan hewan makan plastik','Menangkap lebih banyak ikan'], ans:1,
+   p:'Solusi terbaik adalah mengurangi penggunaan plastik untuk mencegah masuknya sampah ke laut.'},
+  {em:'🎭',sub:'Pantun',diff:'sulit',
+   ctx:'Ada pepaya ada mentimun,\nAda jambu ada mangga,\n...,\n...',
+   q:'Isi pantun yang tepat untuk melengkapi adalah ...',
+   opts:['Aduh senang sekali aku,\nMendapat buah yang banyak',
+         'Sudah belajar tentu mujur,\nSungguh senang hati kita',
+         'Kalau ada sumur di ladang,\nBoleh kita menumpang mandi',
+         'Rajin belajar setiap hari,\nPasti jadi anak berprestasi'], ans:3,
+   p:'Isi pantun harus berima dengan sampiran. Pilihan D memiliki rima yang sesuai.'},
+  {em:'📝',sub:'Kalimat Efektif',diff:'sedang',
+   q:'Kalimat yang efektif adalah kalimat yang ...',
+   opts:['Sangat panjang','Jelas, singkat, dan tidak berulang','Penuh dengan kata-kata indah','Menggunakan bahasa asing'], ans:1,
+   p:'Kalimat efektif adalah kalimat yang jelas, singkat, tidak berlebihan, dan tepat sasaran.'},
+  {em:'📝',sub:'Sinonim',diff:'sedang',
+   q:'Sinonim kata "gagasan" adalah ...',
+   opts:['Kalimat','Kata','Ide','Paragraf'], ans:2,
+   p:'Sinonim "gagasan" adalah ide, pikiran, atau konsep.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Ketika membaca teks, strategi yang baik untuk memahami isi adalah ...',
+   opts:['Membaca sekali dengan cepat tanpa berhenti','Membaca judul saja','Membaca sambil menandai gagasan penting','Tidak perlu membaca, cukup melihat gambar'], ans:2,
+   p:'Strategi membaca efektif adalah membaca sambil menandai atau mencatat gagasan penting.'},
+  {em:'📝',sub:'Kata Depan',diff:'sedang',
+   q:'Penggunaan "ke" yang benar sebagai kata depan adalah ...',
+   opts:['Kemana kamu pergi?','Ke mana kamu pergi?','Kemana kamu pergi!','ke Mana kamu pergi?'], ans:1,
+   p:'"Ke" sebagai kata depan ditulis terpisah dari kata berikutnya: "ke mana".'},
+  {em:'🌸',sub:'Puisi',diff:'sedang',
+   ctx:'Hujan turun rintik-rintik\nMembasahi bumi pertiwi\nPetani tersenyum cantik\nSawah pun jadi berseri',
+   q:'Apa tema puisi di atas?',
+   opts:['Kesedihan petani','Hujan dan kegembiraan petani','Banjir di sawah','Musim kemarau'], ans:1,
+   p:'Puisi menggambarkan hujan yang membuat petani gembira karena sawah menjadi subur.'},
+  {em:'📝',sub:'Ringkasan',diff:'sedang',
+   q:'Langkah pertama dalam membuat ringkasan adalah ...',
+   opts:['Langsung menulis ringkasan','Membaca teks dengan saksama','Mencari gambar','Menulis judul'], ans:1,
+   p:'Langkah pertama membuat ringkasan adalah membaca teks secara saksama untuk memahami isinya.'},
+  {em:'📚',sub:'Jenis Teks',diff:'sedang',
+   q:'Teks yang berisi langkah-langkah cara membuat sesuatu termasuk jenis teks ...',
+   opts:['Narasi','Deskripsi','Prosedur','Argumentasi'], ans:2,
+   p:'Teks prosedur berisi langkah-langkah atau cara melakukan/membuat sesuatu.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Mira membaca sebuah artikel tentang manfaat olahraga. Dalam artikel itu disebutkan bahwa olahraga rutin dapat menjaga kesehatan jantung.',
+   q:'Apa informasi penting yang diperoleh Mira dari artikel tersebut?',
+   opts:['Olahraga itu melelahkan','Jantung bisa sakit sendiri','Olahraga rutin menjaga kesehatan jantung','Mira harus berhenti olahraga'], ans:2,
+   p:'Informasi penting dari artikel adalah bahwa olahraga rutin dapat menjaga kesehatan jantung.'},
+  {em:'🎭',sub:'Drama',diff:'sedang',
+   q:'Tulisan dalam naskah drama yang menunjukkan perintah/arahan untuk pemain disebut ...',
+   opts:['Dialog','Prolog','Epilog','Petunjuk teknis/stage direction'], ans:3,
+   p:'Arahan untuk pemain dalam naskah drama disebut petunjuk teknis atau stage direction.'},
+  {em:'📖',sub:'Kosakata',diff:'sedang',
+   q:'Kata "waspada" berarti ...',
+   opts:['Tidak peduli','Hati-hati dan selalu siaga','Berani','Sembrono'], ans:1,
+   p:'"Waspada" berarti berhati-hati dan selalu siaga terhadap bahaya.'},
+  {em:'📖',sub:'Kosakata',diff:'sedang',
+   q:'Kata "gigih" berarti ...',
+   opts:['Mudah menyerah','Malas','Tekun dan tidak mudah menyerah','Cepat bosan'], ans:2,
+   p:'"Gigih" berarti tekun, ulet, dan tidak mudah menyerah.'},
+  {em:'✏️',sub:'Huruf Kapital',diff:'sedang',
+   q:'Penulisan huruf kapital yang benar digunakan untuk ...',
+   opts:['Semua kata benda','Awal kalimat, nama orang, nama tempat, dan judul','Kata kerja saja','Seluruh kalimat'], ans:1,
+   p:'Huruf kapital digunakan untuk awal kalimat, nama orang, nama tempat, nama hari/bulan, dan judul.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Jika membaca teks dan menemukan kata yang tidak dimengerti, apa yang sebaiknya dilakukan?',
+   opts:['Melewatinya saja','Berhenti membaca','Mencari artinya di kamus atau konteks kalimat','Mengganti kata tersebut'], ans:2,
+   p:'Cara terbaik mengatasi kata yang tidak dimengerti adalah mencari artinya di kamus atau memahami dari konteks kalimat.'},
+],
+
+/* ────────────────── KELAS 5 ────────────────── */
+5: [
+  {em:'📖',sub:'Teks Narasi',diff:'sedang',
+   q:'Teks narasi adalah teks yang berisi ...',
+   opts:['Langkah-langkah melakukan sesuatu','Cerita atau rangkaian peristiwa','Data dan fakta saja','Pendapat dan argumen'], ans:1,
+   p:'Teks narasi berisi cerita atau rangkaian peristiwa yang disusun secara kronologis.'},
+  {em:'📖',sub:'Teks Eksplanasi',diff:'sedang',
+   q:'Teks eksplanasi bertujuan untuk ...',
+   opts:['Menghibur pembaca','Menjelaskan proses terjadinya suatu fenomena','Mengajak pembaca','Mendeskripsikan suatu benda'], ans:1,
+   p:'Teks eksplanasi menjelaskan proses atau cara terjadinya suatu fenomena alam atau sosial.'},
+  {em:'📖',sub:'Teks Eksplanasi',diff:'sedang',
+   q:'Struktur teks eksplanasi yang benar adalah ...',
+   opts:['Orientasi–komplikasi–resolusi','Pernyataan umum–urutan sebab akibat–penutup','Pembukaan–isi–pantun','Deskripsi–argumentasi–penutup'], ans:1,
+   p:'Teks eksplanasi terdiri dari: pernyataan umum, urutan sebab akibat, dan penutup/interpretasi.'},
+  {em:'📢',sub:'Iklan',diff:'sedang',
+   q:'Tujuan utama iklan adalah ...',
+   opts:['Menghibur pembaca','Memberikan berita','Membujuk dan memengaruhi pembaca/penonton','Menjelaskan sejarah'], ans:2,
+   p:'Tujuan iklan adalah membujuk, mempengaruhi, atau menarik perhatian khalayak untuk membeli produk/jasa.'},
+  {em:'📢',sub:'Iklan',diff:'sedang',
+   q:'Ciri bahasa iklan yang baik adalah ...',
+   opts:['Panjang dan bertele-tele','Singkat, padat, menarik, dan mudah diingat','Menggunakan bahasa ilmiah','Tidak menggunakan gambar'], ans:1,
+   p:'Bahasa iklan harus singkat, padat, menarik, mudah diingat, dan persuasif.'},
+  {em:'🎵',sub:'Pantun & Syair',diff:'sedang',
+   q:'Perbedaan syair dengan pantun adalah ...',
+   opts:['Syair terdiri dari 4 baris semua isi, tanpa sampiran','Pantun semua isi','Syair mempunyai sampiran','Pantun tidak berima'], ans:0,
+   p:'Syair terdiri dari 4 baris yang semuanya merupakan isi (tidak ada sampiran), berima a-a-a-a.'},
+  {em:'🎵',sub:'Pantun & Syair',diff:'sedang',
+   q:'Pola rima syair adalah ...',
+   opts:['a-b-a-b','a-a-b-b','a-b-c-d','a-a-a-a'], ans:3,
+   p:'Syair memiliki pola rima a-a-a-a (semua baris berima sama).'},
+  {em:'📝',sub:'Ringkasan',diff:'sedang',
+   q:'Ringkasan yang baik harus ...',
+   opts:['Lebih panjang dari teks aslinya','Memuat semua kalimat asli','Memuat inti tanpa mengubah makna aslinya','Menambahkan pendapat pribadi'], ans:2,
+   p:'Ringkasan harus memuat inti teks asli tanpa mengubah makna dan lebih singkat dari aslinya.'},
+  {em:'📋',sub:'Laporan',diff:'sedang',
+   q:'Laporan pengamatan berisi ...',
+   opts:['Khayalan penulis','Hasil pengamatan nyata secara objektif','Pendapat tanpa fakta','Cerita imajinatif'], ans:1,
+   p:'Laporan pengamatan berisi hasil pengamatan yang nyata, objektif, dan berdasarkan fakta.'},
+  {em:'💬',sub:'Diskusi',diff:'sedang',
+   q:'Dalam diskusi, hal yang paling penting adalah ...',
+   opts:['Menang sendiri','Berbicara paling keras','Mendengarkan dan menghargai pendapat orang lain','Tidak berpendapat'], ans:2,
+   p:'Diskusi yang baik harus saling mendengarkan dan menghargai pendapat orang lain.'},
+  {em:'✏️',sub:'Kalimat Efektif',diff:'sedang',
+   q:'Mana kalimat yang paling efektif?',
+   opts:['Saya sendiri pergi sendiri ke sekolah sendirian','Saya pergi ke sekolah sendiri','Saya pergi ke sekolah dan juga pergi sendiri','Saya pergi dan saya ke sekolah'], ans:1,
+   p:'Kalimat efektif tidak mengulang kata yang sama: "Saya pergi ke sekolah sendiri."'},
+  {em:'✏️',sub:'Kalimat Aktif-Pasif',diff:'sedang',
+   q:'Kalimat "Buku itu dibaca Andi" adalah kalimat ...',
+   opts:['Aktif','Pasif','Tanya','Perintah'], ans:1,
+   p:'Kalimat pasif ditandai dengan predikat ber-awalan "di-". "Dibaca" = pasif.'},
+  {em:'✏️',sub:'Kalimat Aktif-Pasif',diff:'sedang',
+   q:'Ubah kalimat aktif "Ibu memasak nasi" menjadi kalimat pasif ...',
+   opts:['Nasi memasak ibu','Nasi dimasak ibu','Ibu nasi memasak','Dimasak nasi ibu'], ans:1,
+   p:'Kalimat pasif dari "Ibu memasak nasi" adalah "Nasi dimasak ibu."'},
+  {em:'📚',sub:'Jenis Teks',diff:'sedang',
+   q:'Teks yang berisi gambaran suatu objek secara rinci disebut teks ...',
+   opts:['Narasi','Deskripsi','Prosedur','Eksplanasi'], ans:1,
+   p:'Teks deskripsi menggambarkan suatu objek (orang, tempat, benda) secara rinci dan detail.'},
+  {em:'📚',sub:'Jenis Teks',diff:'sedang',
+   q:'Teks argumentasi berisi ...',
+   opts:['Cerita petualangan','Pendapat disertai alasan dan bukti','Langkah-langkah','Gambaran suatu tempat'], ans:1,
+   p:'Teks argumentasi berisi pendapat/argumen yang didukung alasan dan bukti yang kuat.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Semakin sedikit pohon yang ditebang, semakin bersih udara yang kita hirup. Polusi udara dapat menyebabkan penyakit pernapasan.',
+   q:'Kesimpulan yang tepat dari teks tersebut adalah ...',
+   opts:['Menebang pohon membuat udara bersih','Menjaga pohon penting untuk kesehatan pernapasan','Polusi udara tidak berbahaya','Penyakit tidak berkaitan dengan udara'], ans:1,
+   p:'Dari teks dapat disimpulkan bahwa menjaga pohon (tidak menebang) penting untuk kesehatan pernapasan.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Mengapa iklan menggunakan kalimat yang singkat dan mudah diingat?',
+   opts:['Agar iklan terlihat mewah','Agar pesan cepat tersampaikan dan diingat konsumen','Karena tidak ada ruang yang cukup','Agar mahal'], ans:1,
+   p:'Iklan menggunakan kalimat singkat dan mudah diingat agar pesan dapat tersampaikan dengan cepat dan efektif kepada konsumen.'},
+  {em:'📝',sub:'Penggunaan Kata',diff:'sedang',
+   q:'Kata hubung yang menyatakan pertentangan adalah ...',
+   opts:['Dan, serta','Tetapi, namun, melainkan','Karena, sebab','Jika, apabila'], ans:1,
+   p:'Kata hubung pertentangan: tetapi, namun, melainkan, akan tetapi, sedangkan.'},
+  {em:'📝',sub:'Penggunaan Kata',diff:'sedang',
+   q:'Kata hubung yang menyatakan sebab akibat adalah ...',
+   opts:['Dan, atau','Tetapi, namun','Karena, sebab, sehingga','Jika, ketika'], ans:2,
+   p:'Kata hubung sebab akibat: karena, sebab, sehingga, akibatnya, oleh karena itu.'},
+  {em:'📖',sub:'Membaca Kritis',diff:'sulit',
+   ctx:'Menurut penelitian, siswa yang sering membaca buku memiliki kosakata yang lebih kaya dan kemampuan menulis yang lebih baik.',
+   q:'Apa kesimpulan yang dapat diambil dari pernyataan tersebut?',
+   opts:['Membaca tidak penting','Membaca buku bermanfaat untuk kemampuan berbahasa','Hanya peneliti yang perlu membaca','Menulis lebih penting dari membaca'], ans:1,
+   p:'Kesimpulan: membaca buku bermanfaat untuk memperkaya kosakata dan kemampuan menulis.'},
+  {em:'🌸',sub:'Majas',diff:'sulit',
+   q:'"Angin berbisik lembut di telingaku" menggunakan majas ...',
+   opts:['Hiperbola','Personifikasi','Metafora','Simile'], ans:1,
+   p:'Personifikasi adalah majas yang memberikan sifat manusia pada benda mati. Angin "berbisik" = personifikasi.'},
+  {em:'🌸',sub:'Majas',diff:'sulit',
+   q:'"Suaranya seperti petir yang menggelegar" menggunakan majas ...',
+   opts:['Personifikasi','Hiperbola','Simile/perumpamaan','Metafora'], ans:2,
+   p:'Simile menggunakan kata pembanding "seperti" atau "bagaikan". Kalimat ini menggunakan simile.'},
+  {em:'🌸',sub:'Majas',diff:'sulit',
+   q:'"Ia adalah singa di lapangan" menggunakan majas ...',
+   opts:['Simile','Personifikasi','Metafora','Hiperbola'], ans:2,
+   p:'Metafora adalah perbandingan langsung tanpa kata pembanding. "Ia adalah singa" = metafora.'},
+  {em:'📢',sub:'Iklan',diff:'sedang',
+   ctx:'Minum Susu Sehat! Harga terjangkau, manfaat luar biasa! Dapatkan di toko terdekat!',
+   q:'Kalimat dalam iklan di atas yang bersifat persuasif adalah ...',
+   opts:['Susu Sehat','Harga terjangkau, manfaat luar biasa','Toko terdekat','Dapatkan'], ans:1,
+   p:'"Harga terjangkau, manfaat luar biasa" adalah kalimat persuasif yang membujuk konsumen.'},
+  {em:'📝',sub:'Ejaan',diff:'sedang',
+   q:'Penulisan yang benar untuk singkatan "dan lain-lain" adalah ...',
+   opts:['dll','DLL','dll.','d.l.l'], ans:2,
+   p:'Singkatan "dan lain-lain" ditulis "dll." (dengan tanda titik di akhir).'},
+  {em:'📋',sub:'Laporan',diff:'sedang',
+   q:'Bagian yang harus ada dalam laporan pengamatan adalah ...',
+   opts:['Tema puisi','Tujuan, waktu, tempat, hasil pengamatan','Pantun pembuka','Gambar ilustrasi saja'], ans:1,
+   p:'Laporan pengamatan minimal memuat: tujuan, waktu dan tempat, cara, hasil pengamatan, dan kesimpulan.'},
+  {em:'💬',sub:'Presentasi',diff:'sedang',
+   q:'Hal yang harus diperhatikan saat presentasi di depan kelas adalah ...',
+   opts:['Berbicara terlalu cepat','Berbicara dengan jelas dan percaya diri','Membaca teks seluruhnya tanpa melihat pendengar','Tidak perlu berlatih'], ans:1,
+   p:'Presentasi yang baik dilakukan dengan berbicara jelas, percaya diri, dan sesekali menatap pendengar.'},
+  {em:'✏️',sub:'Kalimat',diff:'sedang',
+   q:'Kalimat majemuk adalah kalimat yang memiliki ...',
+   opts:['Satu subjek dan satu predikat','Lebih dari satu klausa yang dihubungkan kata hubung','Tidak ada subjek','Hanya predikat saja'], ans:1,
+   p:'Kalimat majemuk terdiri dari dua atau lebih klausa yang dihubungkan dengan kata hubung.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Di era digital, banyak informasi tersebar di media sosial. Namun tidak semua informasi tersebut benar.',
+   q:'Apa sikap yang tepat ketika menerima informasi dari media sosial?',
+   opts:['Langsung percaya dan menyebarkan','Tidak peduli sama sekali','Memeriksa kebenaran informasi dari sumber terpercaya','Menghindari media sosial sepenuhnya'], ans:2,
+   p:'Sikap bijak adalah memeriksa kebenaran informasi (cek fakta) dari sumber terpercaya sebelum menyebarkannya.'},
+],
+
+/* ────────────────── KELAS 6 ────────────────── */
+6: [
+  {em:'📋',sub:'Teks Laporan',diff:'sedang',
+   q:'Ciri utama teks laporan adalah ...',
+   opts:['Menggunakan bahasa puitis','Berisi fakta objektif dan tidak memihak','Berisi khayalan pengarang','Menggunakan banyak kata sifat'], ans:1,
+   p:'Teks laporan bersifat faktual, objektif, dan tidak memihak. Berisi informasi nyata.'},
+  {em:'🎤',sub:'Pidato',diff:'sedang',
+   q:'Struktur pidato yang benar adalah ...',
+   opts:['Isi–penutup–pembukaan','Pembukaan–isi–penutup','Penutup–isi–pembukaan','Isi–pembukaan–penutup'], ans:1,
+   p:'Struktur pidato: pembukaan (salam dan pengantar) – isi – penutup (kesimpulan dan salam penutup).'},
+  {em:'🎤',sub:'Pidato',diff:'sedang',
+   q:'Bagian pembukaan pidato biasanya berisi ...',
+   opts:['Kesimpulan','Salam pembuka dan pengantar topik','Pertanyaan sulit','Daftar isi'], ans:1,
+   p:'Bagian pembukaan pidato berisi salam pembuka, ucapan terima kasih, dan pengantar topik.'},
+  {em:'📖',sub:'Teks Eksplanasi',diff:'sedang',
+   ctx:'Gempa bumi terjadi karena adanya pergerakan lempeng bumi. Lempeng-lempeng bumi bergerak secara perlahan dan kadang bertabrakan.',
+   q:'Teks tersebut menjelaskan tentang ...',
+   opts:['Cara mencegah gempa','Penyebab terjadinya gempa bumi','Akibat gempa di permukaan','Jenis-jenis lempeng bumi'], ans:1,
+   p:'Teks menjelaskan penyebab terjadinya gempa bumi yaitu pergerakan dan tabrakan lempeng bumi.'},
+  {em:'📖',sub:'Cerita Inspiratif',diff:'sedang',
+   q:'Tujuan cerita inspiratif adalah ...',
+   opts:['Menakut-nakuti pembaca','Memberikan inspirasi dan motivasi kepada pembaca','Mengkritik seseorang','Menjelaskan proses ilmiah'], ans:1,
+   p:'Cerita inspiratif bertujuan memberikan inspirasi, motivasi, dan pelajaran hidup kepada pembaca.'},
+  {em:'💬',sub:'Kritik & Saran',diff:'sedang',
+   q:'Menyampaikan kritik yang baik harus ...',
+   opts:['Langsung menyerang orangnya','Disampaikan dengan data/alasan dan bahasa santun','Berteriak keras-keras','Dilakukan di depan umum'], ans:1,
+   p:'Kritik yang baik disampaikan dengan bahasa santun, disertai alasan/data, dan bertujuan membangun.'},
+  {em:'📖',sub:'Simpulan Bacaan',diff:'sedang',
+   q:'Simpulan bacaan adalah ...',
+   opts:['Salinan teks bacaan','Rangkuman inti yang mewakili keseluruhan isi bacaan','Pertanyaan tentang bacaan','Judul bacaan'], ans:1,
+   p:'Simpulan adalah rangkuman singkat yang mewakili inti keseluruhan isi bacaan.'},
+  {em:'📖',sub:'Simpulan Bacaan',diff:'sulit',
+   ctx:'Membaca buku memiliki banyak manfaat. Selain menambah pengetahuan, membaca juga melatih daya pikir. Orang yang gemar membaca cenderung lebih kreatif.',
+   q:'Simpulan yang tepat dari teks di atas adalah ...',
+   opts:['Membaca hanya membuang waktu','Hanya pengetahuan yang didapat dari membaca','Membaca bermanfaat untuk pengetahuan, daya pikir, dan kreativitas','Kreativitas tidak berhubungan dengan membaca'], ans:2,
+   p:'Simpulan mencakup semua informasi: membaca bermanfaat untuk pengetahuan, daya pikir, dan kreativitas.'},
+  {em:'✏️',sub:'Kata Baku',diff:'sedang',
+   q:'Kata baku dari "ijin" adalah ...',
+   opts:['Ijin','Izin','idzin','Idzin'], ans:1,
+   p:'Kata baku yang benar menurut KBBI adalah "izin", bukan "ijin".'},
+  {em:'✏️',sub:'Kata Baku',diff:'sedang',
+   q:'Kata baku dari "aktifitas" adalah ...',
+   opts:['aktifitas','Aktifitas','Aktivitas','aktivity'], ans:2,
+   p:'Kata baku yang benar adalah "aktivitas", bukan "aktifitas".'},
+  {em:'✏️',sub:'Kata Baku',diff:'sedang',
+   q:'Kata baku dari "nafas" adalah ...',
+   opts:['nafas','Nafas','napas','Napas'], ans:2,
+   p:'Kata baku yang benar adalah "napas", bukan "nafas".'},
+  {em:'📝',sub:'Paragraf Efektif',diff:'sedang',
+   q:'Ciri paragraf yang efektif adalah ...',
+   opts:['Setiap kalimat membahas topik berbeda','Semua kalimat mendukung satu ide pokok','Tidak ada ide pokok','Terdiri dari satu kalimat saja'], ans:1,
+   p:'Paragraf efektif memiliki satu ide pokok dan semua kalimat mendukung ide pokok tersebut.'},
+  {em:'📝',sub:'Kata Hubung',diff:'sedang',
+   q:'Kata hubung "meskipun" menyatakan hubungan ...',
+   opts:['Sebab akibat','Waktu','Pertentangan/konsesi','Syarat'], ans:2,
+   p:'"Meskipun" menyatakan hubungan konsesi/pertentangan: "Meskipun hujan, ia tetap pergi."'},
+  {em:'🎤',sub:'Pidato',diff:'sulit',
+   q:'Teknik berbicara yang baik saat berpidato adalah ...',
+   opts:['Berbicara cepat tanpa jeda','Memandang satu titik saja','Intonasi bervariasi, jelas, dan menatap audiens','Membaca teks tanpa henti'], ans:2,
+   p:'Pidato yang baik menggunakan intonasi bervariasi, suara jelas, dan sesekali menatap pendengar.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Di zaman modern ini, banyak anak lebih suka bermain gadget daripada membaca buku. Padahal membaca buku memiliki banyak manfaat yang tidak bisa digantikan gadget.',
+   q:'Apa pendapat pengarang dalam teks tersebut?',
+   opts:['Gadget lebih baik dari buku','Anak-anak tidak perlu membaca','Membaca buku lebih bermanfaat dari sekedar main gadget','Buku dan gadget sama saja'], ans:2,
+   p:'Pengarang berpendapat bahwa membaca buku memiliki banyak manfaat yang tidak bisa digantikan gadget.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Berita hoaks atau berita bohong semakin banyak beredar. Hal ini membuat masyarakat bingung membedakan informasi benar dan salah.',
+   q:'Solusi terbaik untuk menghadapi hoaks adalah ...',
+   opts:['Percaya semua berita','Tidak membaca berita sama sekali','Memeriksa kebenaran dari sumber terpercaya sebelum menyebarkan','Menyebarkan semua berita yang diterima'], ans:2,
+   p:'Solusi menghadapi hoaks: selalu periksa kebenaran informasi dari sumber terpercaya sebelum menyebarkannya.'},
+  {em:'📖',sub:'Analisis Teks',diff:'sulit',
+   ctx:'Setiap manusia pasti pernah membuat kesalahan. Kesalahan bukanlah akhir dari segalanya, melainkan kesempatan untuk belajar dan berkembang.',
+   q:'Pesan yang ingin disampaikan teks tersebut adalah ...',
+   opts:['Kesalahan itu tidak bisa diperbaiki','Manusia sempurna tidak pernah salah','Kesalahan adalah bagian dari proses belajar dan berkembang','Lebih baik tidak melakukan apa-apa'], ans:2,
+   p:'Pesan teks: kesalahan adalah kesempatan untuk belajar dan berkembang, bukan akhir dari segalanya.'},
+  {em:'📝',sub:'Kalimat',diff:'sedang',
+   q:'Kalimat "Ia berhasil meraih juara pertama walaupun baru berlatih sebulan" mengandung hubungan ...',
+   opts:['Sebab akibat','Syarat','Pertentangan/konsesi','Waktu'], ans:2,
+   p:'"Walaupun" menyatakan hubungan konsesi/pertentangan. Meski baru berlatih sebulan, ia berhasil juara.'},
+  {em:'✏️',sub:'Kata Baku',diff:'sedang',
+   q:'Kata baku dari "telpon" adalah ...',
+   opts:['telpon','Telpon','Telepon','TELEPON'], ans:2,
+   p:'Kata baku yang benar menurut KBBI adalah "telepon", bukan "telpon".'},
+  {em:'📋',sub:'Laporan',diff:'sedang',
+   q:'Bagian kesimpulan dalam laporan berisi ...',
+   opts:['Data mentah','Pertanyaan penelitian','Ringkasan hasil dan jawaban dari tujuan pengamatan','Jadwal kegiatan'], ans:2,
+   p:'Bagian kesimpulan berisi ringkasan hasil pengamatan dan jawaban atas tujuan yang telah ditetapkan.'},
+  {em:'💬',sub:'Diskusi',diff:'sedang',
+   q:'Dalam diskusi, moderator bertugas ...',
+   opts:['Menjawab semua pertanyaan','Memimpin jalannya diskusi','Menulis notulen','Menyanggah semua pendapat'], ans:1,
+   p:'Moderator bertugas memimpin dan mengatur jalannya diskusi agar berjalan tertib dan terarah.'},
+  {em:'📝',sub:'Kalimat Langsung',diff:'sedang',
+   q:'Ciri kalimat langsung adalah ...',
+   opts:['Tidak menggunakan tanda petik','Menggunakan tanda petik (" ") dan huruf kapital awal kutipan','Hanya berupa narasi','Tanpa kata pengantar'], ans:1,
+   p:'Kalimat langsung menggunakan tanda petik (" ") dan huruf kapital di awal kalimat yang dikutip.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Ketika menulis teks argumentasi, hal terpenting yang harus dipersiapkan adalah ...',
+   opts:['Gambar yang menarik','Data, fakta, dan alasan yang kuat untuk mendukung argumen','Kalimat yang sangat panjang','Banyak kata sifat'], ans:1,
+   p:'Teks argumentasi yang kuat harus didukung dengan data, fakta, dan alasan yang logis dan valid.'},
+  {em:'📖',sub:'Kosakata',diff:'sedang',
+   q:'Kata "antusias" memiliki arti ...',
+   opts:['Tidak peduli','Sedih','Bersemangat dan bergairah','Marah'], ans:2,
+   p:'"Antusias" berarti bersemangat, bergairah, dan penuh minat.'},
+  {em:'📖',sub:'Kosakata',diff:'sedang',
+   q:'Kata "harmonis" berarti ...',
+   opts:['Kacau dan berantakan','Selaras, serasi, dan rukun','Keras dan lantang','Sedih dan diam'], ans:1,
+   p:'"Harmonis" berarti selaras, serasi, dan hidup rukun.'},
+  {em:'📖',sub:'Pemahaman',diff:'sulit',
+   ctx:'Program bank sampah berhasil mengurangi jumlah sampah di Kelurahan Maju. Warga antusias mengikuti program ini karena mendapat manfaat ekonomi dari sampah yang dikumpulkan.',
+   q:'Mengapa warga antusias mengikuti program bank sampah?',
+   opts:['Karena dipaksa pemerintah','Karena mendapat manfaat ekonomi dari sampah','Karena tidak ada pilihan lain','Karena programnya mudah'], ans:1,
+   p:'Berdasarkan teks, warga antusias karena mendapatkan manfaat ekonomi dari sampah yang dikumpulkan.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   ctx:'Seorang penulis terkenal berkata, "Kata-kata adalah senjata paling ampuh di dunia. Gunakanlah dengan bijak."',
+   q:'Apa makna pernyataan tersebut?',
+   opts:['Kata-kata bisa melukai fisik','Menulis itu berbahaya','Kata-kata memiliki kekuatan besar dan harus digunakan dengan tanggung jawab','Penulis harus membawa senjata'], ans:2,
+   p:'Makna: kata-kata memiliki pengaruh besar (bisa membangun atau merusak), sehingga harus digunakan dengan bijak dan penuh tanggung jawab.'},
+  {em:'📝',sub:'Bahasa Formal',diff:'sedang',
+   q:'Bahasa formal digunakan dalam situasi ...',
+   opts:['Chatting dengan teman','Bermain bersama','Upacara, pidato, dan surat resmi','Obrolan santai keluarga'], ans:2,
+   p:'Bahasa formal digunakan dalam situasi resmi seperti upacara, pidato, surat resmi, dan laporan.'},
+  {em:'💭',sub:'HOTS',diff:'sulit',
+   q:'Membuat judul teks yang baik harus ...',
+   opts:['Sepanjang mungkin','Menarik, mencerminkan isi, dan singkat','Tidak perlu berhubungan dengan isi','Menggunakan bahasa asing'], ans:1,
+   p:'Judul yang baik harus menarik perhatian, singkat, dan mencerminkan isi atau topik teks.'},
+  {em:'🎤',sub:'Pidato',diff:'sulit',
+   ctx:'Hadirin yang terhormat, marilah kita bersama-sama menjaga kebersihan lingkungan kita demi kesehatan bersama.',
+   q:'Kalimat di atas termasuk bagian pidato yang berupa ...',
+   opts:['Penutup','Isi/ajakan','Pembukaan/salam','Daftar masalah'], ans:1,
+   p:'Kalimat tersebut merupakan isi pidato berupa ajakan (marilah kita bersama-sama).'},
+]
+};
+
+/* ══════════════════ MATERI RINGKASAN ══════════════════ */
+const MATERI = {
+  1: [
+    {icon:'🔤', judul:'Huruf Vokal & Konsonan',
+     isi:'Huruf vokal adalah: <b>a, i, u, e, o</b> (ada 5). Semua huruf lainnya adalah konsonan. Contoh konsonan: b, c, d, f, g, h...',
+     contoh:'Kata "ibu" → huruf vokal: i, u | Kata "buku" → vokal: u, u'},
+    {icon:'📝', judul:'Suku Kata',
+     isi:'Suku kata adalah satuan bunyi dalam kata. Membagi suku kata: pisahkan berdasarkan vokal.',
+     contoh:'"buku" = bu-ku | "sekolah" = se-ko-lah | "mama" = ma-ma'},
+    {icon:'👨‍👩‍👧', judul:'Kosakata Keluarga',
+     isi:'Anggota keluarga: ayah, ibu, kakak, adik, kakek, nenek, paman, bibi.',
+     contoh:'Ibu = orang tua perempuan | Kakak = saudara yang lebih tua'},
+    {icon:'✏️', judul:'Huruf Kapital & Tanda Baca',
+     isi:'Huruf kapital dipakai di awal kalimat dan nama orang/tempat. Kalimat pernyataan → titik (.). Kalimat tanya → tanda tanya (?). Kalimat seru → tanda seru (!).',
+     contoh:'"Ani pergi ke sekolah." | "Di mana kamu?" | "Hore, kita menang!"'},
+    {icon:'🔄', judul:'Lawan Kata (Antonim)',
+     isi:'Antonim adalah kata yang berlawanan maknanya.',
+     contoh:'besar ↔ kecil | pagi ↔ malam | naik ↔ turun | rajin ↔ malas | terang ↔ gelap'},
+  ],
+  2: [
+    {icon:'❓', judul:'Kata Tanya',
+     isi:'<b>Siapa</b> = menanyakan orang | <b>Apa</b> = menanyakan benda/hal | <b>Di mana</b> = tempat | <b>Kapan</b> = waktu | <b>Mengapa</b> = alasan | <b>Bagaimana</b> = cara',
+     contoh:'"Siapa namamu?" | "Di mana kamu tinggal?" | "Mengapa kamu terlambat?"'},
+    {icon:'📕', judul:'Unsur Cerita/Dongeng',
+     isi:'<b>Tokoh</b> = pelaku cerita | <b>Latar</b> = tempat & waktu | <b>Alur</b> = urutan peristiwa | <b>Tema</b> = inti cerita | <b>Amanat</b> = pesan moral',
+     contoh:'Tokoh protagonis (baik) ↔ Antagonis (jahat)'},
+    {icon:'🔄', judul:'Sinonim & Antonim',
+     isi:'<b>Sinonim</b> = kata yang maknanya sama/mirip. <b>Antonim</b> = kata yang maknanya berlawanan.',
+     contoh:'Cantik = indah = elok (sinonim) | Panas ↔ dingin (antonim)'},
+    {icon:'✏️', judul:'Penulisan & EYD',
+     isi:'Nama orang dan nama kota diawali huruf kapital. Kalimat diawali huruf kapital. Nama hari dan bulan diawali huruf kapital.',
+     contoh:'"Jakarta" bukan "jakarta" | "Senin" bukan "senin" | "Januari" bukan "januari"'},
+    {icon:'🌸', judul:'Puisi',
+     isi:'Puisi terdiri dari baris-baris yang disebut <b>bait</b>. Puisi menggunakan bahasa indah dan bermakna. Persamaan bunyi di akhir baris disebut <b>rima</b>.',
+     contoh:'Burung berkicau merdu / Di pagi hari yang baru / (rima: u-u)'},
+  ],
+  3: [
+    {icon:'📖', judul:'Ide Pokok & Kalimat Utama',
+     isi:'<b>Ide pokok</b> = gagasan utama paragraf. <b>Kalimat utama</b> = kalimat yang mengandung ide pokok. Biasanya di awal atau akhir paragraf. <b>Kalimat penjelas</b> = kalimat yang menjelaskan ide pokok.',
+     contoh:'Kalimat pertama biasanya adalah ide pokok; kalimat berikutnya menjelaskan.'},
+    {icon:'✏️', judul:'Imbuhan',
+     isi:'<b>me-</b>: menyatakan melakukan (menulis, membaca) | <b>ber-</b>: menyatakan keadaan atau aktivitas (berlari, bermain) | <b>pe-</b>: menyatakan pelaku (penulis, pembaca)',
+     contoh:'lari → berlari | tulis → menulis → penulis'},
+    {icon:'💬', judul:'Wawancara',
+     isi:'Wawancara = tanya jawab untuk mendapat informasi. <b>Pewawancara</b> = yang bertanya. <b>Narasumber</b> = yang menjawab. Siapkan daftar pertanyaan sebelum wawancara.',
+     contoh:'Wartawan mewawancarai kepala sekolah tentang program sekolah.'},
+    {icon:'📕', judul:'Tokoh Cerita',
+     isi:'<b>Protagonis</b> = tokoh baik/utama. <b>Antagonis</b> = tokoh jahat/penentang. <b>Tritagonis</b> = tokoh penengah. <b>Figuran</b> = tokoh pendukung.',
+     contoh:'Cinderella = protagonis | Ibu tiri = antagonis'},
+    {icon:'📝', judul:'Penulisan "di" dan "ke"',
+     isi:'"<b>di</b>" dan "<b>ke</b>" sebagai kata depan (tempat) ditulis TERPISAH. "<b>di-</b>" dan "<b>ke-</b>" sebagai imbuhan ditulis MENYAMBUNG.',
+     contoh:'"di sekolah", "ke pasar" (kata depan) | "dimakan", "ketua" (imbuhan)'},
+  ],
+  4: [
+    {icon:'🎭', judul:'Pantun',
+     isi:'Pantun: 4 baris per bait. Baris 1&2 = <b>sampiran</b>. Baris 3&4 = <b>isi</b>. Rima: <b>a-b-a-b</b>. Setiap baris 8-12 suku kata.',
+     contoh:'Buah mangga buah pepaya (a)\nDibawa dari ladang (b)\nBelajar dengan gembira (a)\nCita-cita pasti datang (b)'},
+    {icon:'📚', judul:'Fiksi & Nonfiksi',
+     isi:'<b>Fiksi</b> = karangan/khayalan. Contoh: dongeng, novel, cerpen, drama. <b>Nonfiksi</b> = berdasarkan fakta nyata. Contoh: biografi, ensiklopedia, laporan, berita.',
+     contoh:'Novel Harry Potter = fiksi | Biografi Soekarno = nonfiksi'},
+    {icon:'📝', judul:'Kalimat Efektif',
+     isi:'Kalimat efektif: jelas, singkat, tidak berulang, dan tepat sasaran. Hindari pengulangan kata yang tidak perlu.',
+     contoh:'❌ "Saya sendiri pergi sendiri" | ✅ "Saya pergi sendiri"'},
+    {icon:'📋', judul:'Teks Prosedur',
+     isi:'Teks prosedur berisi langkah-langkah cara melakukan/membuat sesuatu. Ciri: menggunakan kata urutan (pertama, kemudian, lalu, terakhir). Bersifat instruksi.',
+     contoh:'Cara membuat teh: Pertama, siapkan air panas. Kemudian, celupkan kantong teh...'},
+    {icon:'📖', judul:'Gagasan Pokok & Gagasan Pendukung',
+     isi:'<b>Gagasan pokok</b> = ide utama paragraf (ada di kalimat utama). <b>Gagasan pendukung</b> = rincian/detail yang menjelaskan gagasan pokok.',
+     contoh:'Gagasan pokok: "Indonesia kaya budaya." Pendukung: "Terdapat 300 suku bangsa..."'},
+  ],
+  5: [
+    {icon:'📖', judul:'Jenis Teks',
+     isi:'<b>Narasi</b>: cerita rangkaian peristiwa | <b>Deskripsi</b>: gambaran rinci suatu objek | <b>Prosedur</b>: langkah-langkah | <b>Eksplanasi</b>: menjelaskan fenomena | <b>Argumentasi</b>: pendapat + bukti | <b>Persuasi</b>: membujuk',
+     contoh:'Narasi: novel | Eksplanasi: "Bagaimana hujan terjadi?" | Persuasi: iklan'},
+    {icon:'🌸', judul:'Majas',
+     isi:'<b>Personifikasi</b>: benda mati berlaku seperti manusia. <b>Simile</b>: perbandingan dengan "seperti/bagaikan". <b>Metafora</b>: perbandingan langsung. <b>Hiperbola</b>: melebih-lebihkan.',
+     contoh:'"Angin berbisik" (personifikasi) | "Kuat seperti singa" (simile) | "Ia adalah singa" (metafora)'},
+    {icon:'🎵', judul:'Pantun & Syair',
+     isi:'<b>Pantun</b>: 4 baris, baris 1-2 sampiran, 3-4 isi, rima a-b-a-b. <b>Syair</b>: 4 baris, semua isi (tanpa sampiran), rima a-a-a-a.',
+     contoh:'Syair: semua 4 baris berisi makna/isi, bukan sampiran.'},
+    {icon:'✏️', judul:'Kalimat Aktif & Pasif',
+     isi:'<b>Kalimat aktif</b>: subjek melakukan tindakan (predikat ber-imbuhan me-). <b>Kalimat pasif</b>: subjek dikenai tindakan (predikat ber-imbuhan di-).',
+     contoh:'Aktif: "Ibu memasak nasi." | Pasif: "Nasi dimasak ibu."'},
+    {icon:'📢', judul:'Iklan',
+     isi:'Tujuan iklan = membujuk dan memengaruhi. Ciri bahasa iklan: singkat, padat, menarik, mudah diingat, persuasif. Jenis: iklan niaga, layanan masyarakat, pengumuman.',
+     contoh:'"Minum Susu Kuat! Sehat untuk semua!" — singkat dan persuasif'},
+  ],
+  6: [
+    {icon:'✏️', judul:'Kata Baku',
+     isi:'Kata baku = kata yang sesuai KBBI. Penting digunakan dalam tulisan dan situasi formal.',
+     contoh:'ijin → <b>izin</b> | aktifitas → <b>aktivitas</b> | nafas → <b>napas</b> | telpon → <b>telepon</b> | atlit → <b>atlet</b>'},
+    {icon:'🎤', judul:'Pidato',
+     isi:'Struktur pidato: <b>Pembukaan</b> (salam, pengantar) → <b>Isi</b> (inti pesan/ajakan) → <b>Penutup</b> (kesimpulan, salam penutup). Teknik: intonasi bervariasi, kontak mata dengan audiens.',
+     contoh:'"Assalamualaikum, hadirin yang terhormat..." (pembukaan)'},
+    {icon:'📖', judul:'Membaca Kritis',
+     isi:'Membaca kritis = membaca untuk memahami, menganalisis, dan mengevaluasi isi teks. Tanyakan: Apa ide pokok? Apa fakta/opini? Apa tujuan penulis? Apakah informasi akurat?',
+     contoh:'Hoaks = berita palsu. Solusi: cek fakta dari sumber terpercaya.'},
+    {icon:'💬', judul:'Diskusi & Presentasi',
+     isi:'<b>Moderator</b>: memimpin diskusi. <b>Notulis</b>: mencatat hasil diskusi. <b>Peserta</b>: menyampaikan pendapat. Etika: mendengarkan, tidak memotong, berpendapat sopan.',
+     contoh:'Dalam diskusi: angkat tangan sebelum berbicara, gunakan data untuk mendukung pendapat.'},
+    {icon:'📝', judul:'Kata Hubung Lanjutan',
+     isi:'<b>Pertentangan</b>: tetapi, namun, meskipun, walaupun, kendati. <b>Sebab</b>: karena, sebab. <b>Akibat</b>: sehingga, akibatnya. <b>Syarat</b>: jika, apabila, asalkan. <b>Waktu</b>: ketika, saat, sejak.',
+     contoh:'"Meskipun hujan, ia tetap berangkat." (pertentangan)'},
+  ]
+};
+
+/* ══════════════════ STATE ══════════════════ */
+let currentKelas = 1;
+let pool = [], qIdx = 0, benar = 0, salah = 0, streak = 0, answered = false;
+let currentQ = null;
+
+function shuffle(arr){ return arr.sort(()=>Math.random()-.5); }
+function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function setKelas(k, el){
+  currentKelas = k;
+  document.querySelectorAll('#tab-latihan .kelas-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  buildPool();
+}
+
+function buildPool(){
+  const all = SOAL[currentKelas];
+  pool = shuffle([...all]).slice(0, 10);
+  qIdx = 0; benar = 0; salah = 0; streak = 0; answered = false;
+  updateScore();
+  renderQuestion();
+}
+
+/* ══════════════════ RENDER ══════════════════ */
+function renderQuestion(){
+  const area = document.getElementById('soal-area');
+  if(qIdx >= pool.length){ renderResults(); return; }
+  answered = false;
+  currentQ = pool[qIdx];
+
+  const pct = Math.round(((qIdx+1)/pool.length)*100);
+  document.getElementById('sc-no').textContent = `${qIdx+1}/10`;
+  document.getElementById('prog-label').textContent = `Soal ${qIdx+1} dari 10`;
+  document.getElementById('prog-pct').textContent = pct+'%';
+  document.getElementById('progressBar').style.width = (pct)+'%';
+
+  const q = currentQ;
+  const diffClass = {mudah:'diff-mudah',sedang:'diff-sedang',sulit:'diff-sulit'}[q.diff]||'diff-mudah';
+  const diffLabel = {mudah:'Mudah',sedang:'Sedang',sulit:'HOTS'}[q.diff]||'Mudah';
+  const letters = ['A','B','C','D'];
+
+  // shuffle options with index tracking
+  let opts = q.opts.map((o,i)=>({text:o,orig:i}));
+  opts = shuffle(opts);
+  const correctShuffled = opts.findIndex(o=>o.orig===q.ans);
+
+  const ctxHtml = q.ctx ? `<div class="q-context">${q.ctx}</div>` : '';
+
+  area.innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <div class="q-badge">📚 Kelas ${currentKelas}</div>
+        <div class="q-subtema">${q.sub}</div>
+        <div class="q-difficulty ${diffClass}">${diffLabel}</div>
+      </div>
+      <span class="q-emoji">${q.em}</span>
+      ${ctxHtml}
+      <div class="q-text">${q.q}</div>
+      <div class="q-hint-area" id="q-hint">💡 Klik Petunjuk jika perlu bantuan</div>
+    </div>
+    <div id="feedback-box" class="feedback"></div>
+    <div id="pembahasan-box" class="pembahasan"></div>
+    <div class="options">
+      ${opts.map((o,i)=>`
+        <button class="option" onclick="checkAns(${i},${correctShuffled})" id="opt-${i}">
+          <div class="opt-letter">${letters[i]}</div>
+          <span>${o.text}</span>
+        </button>`).join('')}
+    </div>
+    <div class="nav-row">
+      <button class="btn" onclick="showHint()">💡 Petunjuk</button>
+      <button class="btn coral" onclick="buildPool()">🔄 Reset</button>
+    </div>
+  `;
+  // store for checking
+  window._correctIdx = correctShuffled;
+}
+
+function checkAns(idx, correctIdx){
+  if(answered) return;
+  answered = true;
+  const btns = document.querySelectorAll('.option');
+  btns.forEach(b=>b.classList.add('disabled'));
+  const q = currentQ;
+
+  if(idx === correctIdx){
+    btns[idx].classList.add('correct');
+    benar++; streak++;
+    updateScore();
+    showFeedback(true);
+    if(streak % 3 === 0) showStreakToast(`🔥 ${streak} benar berturut-turut!`);
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[correctIdx].classList.add('correct');
+    salah++; streak = 0;
+    updateScore();
+    showFeedback(false);
+  }
+
+  // show pembahasan
+  const pb = document.getElementById('pembahasan-box');
+  pb.innerHTML = `<strong>📖 Pembahasan:</strong> ${q.p}`;
+  pb.classList.add('show');
+
+  setTimeout(()=>{ qIdx++; renderQuestion(); }, 2200);
+}
+
+function showFeedback(ok){
+  const fb = document.getElementById('feedback-box');
+  if(!fb) return;
+  const msgs = ok
+    ? ['✅ Benar! Luar biasa! 🌟','✅ Tepat sekali! 👏','✅ Hebat! 🎉','✅ Kamu pintar! 🏆']
+    : ['❌ Belum tepat. Yuk pelajari pembahasannya!','❌ Salah. Coba perhatikan penjelasannya!'];
+  const streak5 = streak >= 5 ? ' — Streak '+streak+'🔥' : '';
+  fb.textContent = msgs[rand(0,msgs.length-1)] + (ok ? streak5 : '');
+  fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
+}
+
+function showHint(){
+  const hint = document.getElementById('q-hint');
+  if(!hint) return;
+  const q = currentQ;
+  const hints = {
+    'Huruf Vokal':'💡 Ingat: huruf vokal adalah a, i, u, e, o.',
+    'Huruf Konsonan':'💡 Konsonan = semua huruf selain a, i, u, e, o.',
+    'Suku Kata':'💡 Suku kata dibagi berdasarkan vokal. Contoh: "bu-ku"',
+    'Ide Pokok':'💡 Ide pokok biasanya ada di kalimat pertama atau terakhir paragraf.',
+    'Kalimat Utama':'💡 Kalimat utama mengandung gagasan utama paragraf.',
+    'Imbuhan':'💡 Cari kata dasarnya dulu, lalu tentukan imbuhannya.',
+    'Pantun':'💡 Pantun: 4 baris, baris 1-2 sampiran, 3-4 isi, rima a-b-a-b.',
+    'Pantun & Syair':'💡 Syair: 4 baris semua isi, rima a-a-a-a.',
+    'Majas':'💡 Personifikasi=benda bersifat manusia, Simile=seperti/bagaikan, Metafora=perbandingan langsung.',
+    'Kata Baku':'💡 Kata baku sesuai KBBI. Contoh: izin (bukan ijin), aktivitas (bukan aktifitas).',
+    'Iklan':'💡 Iklan menggunakan bahasa persuasif = mengajak/membujuk.',
+    'Kata Tanya':'💡 Siapa=orang, Apa=benda, Di mana=tempat, Kapan=waktu, Mengapa=alasan.',
+  };
+  const hintText = hints[q.sub] || '💡 Baca teks dengan teliti dan pilih jawaban yang paling tepat!';
+  hint.textContent = hintText;
+  hint.classList.add('shown');
+}
+
+function updateScore(){
+  document.getElementById('sc-benar').textContent = benar;
+  document.getElementById('sc-salah').textContent = salah;
+  document.getElementById('sc-streak').textContent = streak+'🔥';
+}
+
+function showStreakToast(msg){
+  const t = document.getElementById('streakToast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function renderResults(){
+  const pct = Math.round(benar/10*100);
+  let em, grade, desc;
+  if(pct>=90){em='🏆';grade='A+ Luar Biasa!';desc='Kamu sangat menguasai Bahasa Indonesia Kelas '+currentKelas+'!';}
+  else if(pct>=80){em='🌟';grade='A Bagus Sekali!';desc='Hampir sempurna. Terus pertahankan!';}
+  else if(pct>=70){em='👍';grade='B Cukup Baik';desc='Bagus! Masih ada ruang untuk berkembang.';}
+  else if(pct>=60){em='📚';grade='C Perlu Latihan';desc='Yuk baca materinya lagi dan coba lagi!';}
+  else{em='💪';grade='D Semangat!';desc='Jangan menyerah! Pelajari materi dulu ya.';}
+
+  document.getElementById('soal-area').innerHTML=`
+    <div class="results">
+      <span class="result-emoji">${em}</span>
+      <div style="font-size:.85rem;color:var(--muted);font-weight:700;letter-spacing:2px;text-transform:uppercase">Hasil Kelas ${currentKelas}</div>
+      <div class="result-score">${pct}%</div>
+      <div class="result-grade">${grade}</div>
+      <div class="result-desc">${desc}</div>
+      <div class="result-breakdown">
+        <div class="rb-item"><div class="rb-val" style="color:var(--correct)">${benar}</div><div style="font-size:.7rem;color:var(--muted)">Benar</div></div>
+        <div class="rb-item"><div class="rb-val" style="color:var(--wrong)">${salah}</div><div style="font-size:.7rem;color:var(--muted)">Salah</div></div>
+        <div class="rb-item"><div class="rb-val" style="color:var(--teal)">10</div><div style="font-size:.7rem;color:var(--muted)">Total</div></div>
+      </div>
+      <div class="nav-row" style="justify-content:center">
+        <button class="btn primary" onclick="buildPool()">🔄 Main Lagi</button>
+        <button class="btn" onclick="switchTab('materi')">📖 Baca Materi</button>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════ MATERI ══════════════════ */
+let currentMateriKelas = 1;
+function setMateriKelas(k, el){
+  currentMateriKelas = k;
+  document.querySelectorAll('#tab-materi .kelas-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderMateri();
+}
+function renderMateri(){
+  const area = document.getElementById('materi-area');
+  const items = MATERI[currentMateriKelas] || [];
+  area.innerHTML = items.map(m=>`
+    <div class="materi-card">
+      <h3>${m.icon} ${m.judul}</h3>
+      <p>${m.isi}</p>
+      <div class="contoh-box">✏️ <b>Contoh:</b> ${m.contoh}</div>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════ TABS ══════════════════ */
+function switchTab(t){
+  document.getElementById('tab-latihan').style.display = t==='latihan'?'block':'none';
+  document.getElementById('tab-materi').style.display = t==='materi'?'block':'none';
+  document.querySelectorAll('.tabs .tab').forEach((el,i)=>{
+    el.classList.toggle('active', ['latihan','materi'][i]===t);
+  });
+  if(t==='materi') renderMateri();
+}
+
+buildPool();
+</script>
+</body>
+</html>
