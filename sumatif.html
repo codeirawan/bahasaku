@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Bahasa Indonesia Kelas 1 SD 📖</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fdf8f0;
+  --bg2: #fef3e2;
+  --card: #ffffff;
+  --border: #e8d9c0;
+  --teal: #0d9488;
+  --teal-light: #ccfbf1;
+  --teal-dark: #0f766e;
+  --coral: #f97316;
+  --coral-light: #ffedd5;
+  --gold: #d97706;
+  --gold-light: #fef3c7;
+  --purple: #7c3aed;
+  --purple-light: #ede9fe;
+  --text: #1c1917;
+  --text2: #57534e;
+  --muted: #a8a29e;
+  --correct: #059669;
+  --correct-bg: #d1fae5;
+  --wrong: #dc2626;
+  --wrong-bg: #fee2e2;
+  --shadow: 0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,.12);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(13,148,136,.06) 0%, transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(249,115,22,.05) 0%, transparent 35%),
+    radial-gradient(circle at 70% 80%, rgba(124,58,237,.04) 0%, transparent 40%),
+    radial-gradient(circle at 10% 85%, rgba(217,119,6,.05) 0%, transparent 35%);
+}
+.wave-top {
+  position:fixed; top:0; left:0; right:0; height:6px; z-index:100;
+  background: linear-gradient(90deg, var(--teal), var(--coral), var(--gold), var(--purple), var(--teal));
+  background-size: 200% 100%;
+  animation: waveShift 4s linear infinite;
+}
+@keyframes waveShift { from{background-position:0%} to{background-position:200%} }
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 16px 60px;
+  position: relative; z-index: 1;
+}
+
+/* HEADER */
+header { text-align:center; margin-bottom:28px; padding-top:12px; }
+.header-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--teal-light); color:var(--teal-dark);
+  font-size:.72rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+  padding:5px 14px; border-radius:20px; margin-bottom:10px;
+}
+header h1 {
+  font-family:'Baloo 2',cursive; font-weight:800; font-size:2.6rem;
+  color:var(--text); line-height:1;
+}
+header h1 span { color:var(--teal); }
+header p { color:var(--text2); font-size:.9rem; margin-top:6px; }
+
+/* SCOREBAR */
+.scorebar {
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--card); border:2px solid var(--border);
+  border-radius:18px; padding:14px 20px; margin-bottom:20px;
+  box-shadow:var(--shadow);
+}
+.sb-item { text-align:center; }
+.sb-val { font-family:'Baloo 2',cursive; font-size:1.6rem; font-weight:800; }
+.sb-lbl { font-size:.68rem; color:var(--muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+.sb-val.green { color:var(--correct); }
+.sb-val.red   { color:var(--wrong); }
+.sb-val.gold  { color:var(--gold); }
+.sb-val.teal  { color:var(--teal); }
+
+/* TOPIC FILTER */
+.topic-wrap {
+  display:flex; gap:6px; justify-content:center;
+  margin-bottom:16px; flex-wrap:wrap;
+}
+.topic-btn {
+  padding:7px 14px; border-radius:30px;
+  border:2px solid var(--border); background:var(--card);
+  color:var(--text2); cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.78rem; font-weight:800;
+  transition:all .18s;
+}
+.topic-btn:hover { border-color:var(--coral); color:var(--coral); }
+.topic-btn.active { border-color:var(--coral); color:var(--coral); background:var(--coral-light); }
+
+/* PROGRESS */
+.progress-wrap { background:var(--border); border-radius:99px; height:8px; margin-bottom:20px; overflow:hidden; }
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--teal),var(--coral));
+  border-radius:99px; transition:width .4s ease;
+}
+.progress-label {
+  display:flex; justify-content:space-between;
+  font-size:.72rem; color:var(--muted); font-weight:700; margin-bottom:6px;
+}
+
+/* QUESTION CARD */
+.q-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:24px; padding:28px 24px;
+  margin-bottom:14px; box-shadow:var(--shadow);
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.q-meta {
+  display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap;
+}
+.q-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--teal-light); color:var(--teal-dark);
+  font-size:.7rem; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+  padding:4px 12px; border-radius:20px;
+}
+.q-subtema {
+  font-size:.72rem; color:var(--muted); font-weight:700;
+  background:var(--bg2); padding:4px 10px; border-radius:20px;
+}
+.q-difficulty {
+  font-size:.68rem; font-weight:800; padding:4px 10px; border-radius:20px;
+}
+.diff-mudah { background:#d1fae5; color:#065f46; }
+.diff-sedang { background:#fef3c7; color:#92400e; }
+.diff-sulit  { background:#fee2e2; color:#991b1b; }
+
+.q-emoji {
+  font-size:2.4rem; display:block; text-align:center;
+  margin-bottom:10px; animation:bob 2.5s ease-in-out infinite;
+}
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+.q-context {
+  background:var(--bg2); border-left:4px solid var(--teal);
+  border-radius:0 12px 12px 0; padding:12px 14px;
+  font-size:.88rem; color:var(--text2); line-height:1.7;
+  margin-bottom:14px; font-style:italic;
+}
+.q-text {
+  font-family:'Baloo 2',cursive; font-size:1.2rem; font-weight:700;
+  color:var(--text); line-height:1.5; text-align:center; margin-bottom:6px;
+}
+.q-hint-area {
+  min-height:22px; font-size:.82rem; color:var(--muted);
+  text-align:center; margin-top:4px; transition:color .2s;
+}
+.q-hint-area.shown { color:var(--gold); font-weight:700; }
+
+/* OPTIONS */
+.options {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:10px; margin-bottom:14px;
+}
+.option {
+  background:var(--bg); border:2px solid var(--border);
+  border-radius:14px; padding:14px 16px;
+  cursor:pointer; text-align:left;
+  font-family:'Nunito',sans-serif; font-size:.92rem; font-weight:700;
+  color:var(--text); transition:all .16s;
+  display:flex; align-items:center; gap:10px;
+}
+.option:hover:not(.disabled) {
+  border-color:var(--teal); background:var(--teal-light);
+  transform:translateY(-2px); box-shadow:0 4px 12px rgba(13,148,136,.15);
+}
+.opt-letter {
+  width:28px; height:28px; border-radius:8px; flex-shrink:0;
+  background:var(--border); color:var(--text2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.78rem; font-weight:800; transition:all .16s;
+}
+.option:hover:not(.disabled) .opt-letter { background:var(--teal); color:#fff; }
+.option.correct { border-color:var(--correct); background:var(--correct-bg); }
+.option.correct .opt-letter { background:var(--correct); color:#fff; }
+.option.wrong   { border-color:var(--wrong); background:var(--wrong-bg); }
+.option.wrong   .opt-letter { background:var(--wrong); color:#fff; }
+.option.disabled { cursor:not-allowed; opacity:.75; }
+
+/* FEEDBACK */
+.feedback {
+  text-align:center; padding:12px 16px; border-radius:14px;
+  font-size:.92rem; font-weight:700; margin-bottom:12px;
+  opacity:0; transition:opacity .2s; display:none;
+}
+.feedback.show { opacity:1; display:block; }
+.feedback.correct { background:var(--correct-bg); color:var(--correct); border:1.5px solid rgba(5,150,105,.25); }
+.feedback.wrong   { background:var(--wrong-bg);   color:var(--wrong);   border:1.5px solid rgba(220,38,38,.2); }
+
+.pembahasan {
+  background:var(--gold-light); border:1.5px solid #fcd34d;
+  border-radius:12px; padding:10px 14px; margin-bottom:12px;
+  font-size:.82rem; color:#78350f; line-height:1.6; display:none;
+}
+.pembahasan.show { display:block; }
+.pembahasan strong { color:#92400e; }
+
+/* NAV ROW */
+.nav-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.btn {
+  padding:10px 20px; border-radius:12px;
+  border:2px solid var(--border); background:var(--card);
+  color:var(--text2); cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.84rem; font-weight:700;
+  transition:all .16s; box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.btn:hover { border-color:var(--teal); color:var(--teal); }
+.btn.primary { background:var(--teal); border-color:var(--teal); color:#fff; box-shadow:0 4px 12px rgba(13,148,136,.3); }
+.btn.primary:hover { background:var(--teal-dark); }
+.btn.coral { border-color:var(--coral); color:var(--coral); }
+.btn.coral:hover { background:var(--coral-light); }
+
+/* RESULTS */
+.results {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:24px; padding:36px 24px; text-align:center;
+  box-shadow:var(--shadow-lg); animation:slideUp .4s ease;
+}
+.result-emoji { font-size:4rem; display:block; margin-bottom:8px; }
+.result-score {
+  font-family:'Baloo 2',cursive; font-size:4.5rem; font-weight:800;
+  color:var(--teal); line-height:1;
+}
+.result-grade { font-family:'Baloo 2',cursive; font-size:1.6rem; font-weight:800; margin:6px 0; }
+.result-desc  { color:var(--text2); font-size:.9rem; margin-bottom:20px; }
+.result-breakdown {
+  display:flex; gap:12px; justify-content:center;
+  margin-bottom:24px; flex-wrap:wrap;
+}
+.rb-item {
+  background:var(--bg2); border:2px solid var(--border);
+  border-radius:14px; padding:10px 20px; text-align:center;
+}
+.rb-val { font-family:'Baloo 2',cursive; font-size:1.6rem; font-weight:800; }
+
+/* REVIEW TABLE */
+.review-table { width:100%; border-collapse:collapse; margin-top:12px; font-size:.8rem; text-align:left; }
+.review-table th { background:var(--bg2); padding:8px 10px; font-weight:800; color:var(--text2); border-bottom:2px solid var(--border); }
+.review-table td { padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
+.rv-benar { color:var(--correct); font-weight:800; }
+.rv-salah { color:var(--wrong); font-weight:800; }
+
+/* STREAK TOAST */
+.streak-toast {
+  position:fixed; top:20px; right:16px; z-index:999;
+  background:var(--gold); color:#fff; font-weight:800;
+  padding:10px 18px; border-radius:14px; font-size:.84rem;
+  opacity:0; pointer-events:none; transition:opacity .3s;
+  font-family:'Nunito',sans-serif; box-shadow:0 4px 20px rgba(217,119,6,.4);
+}
+.streak-toast.show { opacity:1; }
+
+/* SKIP INDICATOR */
+.skip-bar {
+  height:4px; background:var(--border); border-radius:99px;
+  margin-top:12px; overflow:hidden; display:none;
+}
+.skip-fill {
+  height:100%; background:var(--teal);
+  border-radius:99px; transition:width .1s linear;
+}
+
+/* RESPONSIVE */
+@media(max-width:500px) {
+  header h1 { font-size:2rem; }
+  .q-text { font-size:1.05rem; }
+  .options { grid-template-columns:1fr; }
+  .option { font-size:.86rem; }
+  .result-score { font-size:3.5rem; }
+  .scorebar { padding:10px 12px; }
+  .sb-val { font-size:1.3rem; }
+}
+</style>
+</head>
+<body>
+<div class="wave-top"></div>
+<div class="streak-toast" id="streakToast"></div>
+<div class="container">
+
+  <header>
+    <div class="header-badge">📖 Kelas 1 SD · Semester 1 &amp; 2</div>
+    <h1>Kuis Bahasa<span>Ku</span> 📚</h1>
+    <p>50 Soal Pilihan Ganda · Kata Ajaib, Suku Kata, Huruf, Tanda Baca &amp; Pemahaman</p>
+  </header>
+
+  <div class="scorebar">
+    <div class="sb-item"><div class="sb-val green" id="sc-benar">0</div><div class="sb-lbl">Benar</div></div>
+    <div class="sb-item"><div class="sb-val red"   id="sc-salah">0</div><div class="sb-lbl">Salah</div></div>
+    <div class="sb-item"><div class="sb-val gold"  id="sc-streak">0🔥</div><div class="sb-lbl">Streak</div></div>
+    <div class="sb-item"><div class="sb-val teal"  id="sc-no">1/50</div><div class="sb-lbl">Soal</div></div>
+  </div>
+
+  <div class="topic-wrap" id="topicFilter">
+    <button class="topic-btn active" onclick="setTopic('Semua',this)">🌟 Semua</button>
+    <button class="topic-btn" onclick="setTopic('Kata Ajaib',this)">🙏 Kata Ajaib</button>
+    <button class="topic-btn" onclick="setTopic('Suku Kata',this)">📝 Suku Kata</button>
+    <button class="topic-btn" onclick="setTopic('Huruf',this)">🔤 Huruf</button>
+    <button class="topic-btn" onclick="setTopic('Tanda Baca',this)">✏️ Tanda Baca</button>
+    <button class="topic-btn" onclick="setTopic('Pemahaman',this)">📖 Pemahaman</button>
+    <button class="topic-btn" onclick="setTopic('Kosakata',this)">💬 Kosakata</button>
+  </div>
+
+  <div class="progress-label">
+    <span id="prog-label">Soal 1 dari 50</span>
+    <span id="prog-pct">2%</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progressBar" style="width:2%"></div>
+  </div>
+
+  <div id="soal-area"></div>
+
+</div>
+
+<script>
+const ALL_SOAL = [
+  /* ═══ KATA AJAIB (10) ═══ */
+  {em:'🙏',sub:'Kata Ajaib',diff:'mudah',
+   ctx:'Rina tidak sengaja menginjak kaki Budi.',
+   q:'Kata ajaib yang harus diucapkan Rina adalah ….',
+   opts:['Terima kasih','Maaf','Tolong','Sama-sama'], ans:1,
+   p:'Kata "maaf" diucapkan saat kita melakukan kesalahan kepada orang lain.'},
+  {em:'🚶',sub:'Kata Ajaib',diff:'mudah',
+   ctx:'Dani ingin melewati kerumunan orang.',
+   q:'Kata ajaib yang tepat diucapkan Dani adalah ….',
+   opts:['Tolong','Terima kasih','Permisi','Maaf'], ans:2,
+   p:'"Permisi" diucapkan saat ingin melewati orang lain atau meminta izin.'},
+  {em:'🤝',sub:'Kata Ajaib',diff:'mudah',
+   ctx:'Ibu membantu Siti mengerjakan PR.',
+   q:'Siti seharusnya mengucapkan ….',
+   opts:['Maaf','Tolong','Permisi','Terima kasih'], ans:3,
+   p:'"Terima kasih" diucapkan saat menerima bantuan atau pemberian dari orang lain.'},
+  {em:'🖊️',sub:'Kata Ajaib',diff:'mudah',
+   q:'Edo ingin meminjam pensil teman. Kalimat yang tepat diucapkan Edo adalah ….',
+   opts:['Tolong, boleh pinjam pensilmu?','Ambilkan pensil itu!','Pensil milikku.','Aku tidak punya pensil.'], ans:0,
+   p:'"Tolong" digunakan saat meminta bantuan orang lain dengan sopan.'},
+  {em:'🌟',sub:'Kata Ajaib',diff:'mudah',
+   q:'Berikut yang BUKAN termasuk kata ajaib adalah ….',
+   opts:['Permisi','Tolong','Maaf','Halo'], ans:3,
+   p:'Kata ajaib adalah kata sopan seperti: tolong, maaf, terima kasih, dan permisi.'},
+  {em:'🙋',sub:'Kata Ajaib',diff:'mudah',
+   ctx:'Lani ingin bertanya kepada guru.',
+   q:'Kata ajaib yang diucapkan Lani sebelum bertanya adalah ….',
+   opts:['Terima kasih','Permisi','Maaf','Sama-sama'], ans:1,
+   p:'"Permisi" atau "bolehkah saya bertanya" diucapkan sebelum mengajukan pertanyaan kepada guru.'},
+  {em:'🎁',sub:'Kata Ajaib',diff:'mudah',
+   ctx:'Pak Guru memberikan hadiah kepada Miko.',
+   q:'Miko mengucapkan ….',
+   opts:['Maaf','Tolong','Terima kasih','Permisi'], ans:2,
+   p:'"Terima kasih" adalah ungkapan rasa syukur saat menerima hadiah atau pemberian.'},
+  {em:'💺',sub:'Kata Ajaib',diff:'mudah',
+   q:'"…, bolehkah saya duduk di sini?" Kata yang tepat adalah ….',
+   opts:['Tolong','Maaf','Permisi','Terima kasih'], ans:2,
+   p:'"Permisi" digunakan untuk meminta izin atau menyela dengan sopan.'},
+  {em:'🙏',sub:'Kata Ajaib',diff:'sedang',
+   q:'Kata ajaib yang diucapkan saat meminta bantuan orang lain adalah ….',
+   opts:['Maaf','Tolong','Permisi','Terima kasih'], ans:1,
+   p:'"Tolong" adalah kata yang kita ucapkan saat memerlukan bantuan dari orang lain.'},
+  {em:'📝',sub:'Kata Ajaib',diff:'sedang',
+   q:'Kalimat yang menggunakan kata ajaib dengan tepat adalah ….',
+   opts:['Ambilkan buku itu sekarang!','Tolong ambilkan buku itu, ya!','Buku itu milikku.','Aku mau buku itu.'], ans:1,
+   p:'Menggunakan "tolong" membuat permintaan kita menjadi sopan dan menyenangkan.'},
+
+  /* ═══ SUKU KATA (15) ═══ */
+  {em:'📝',sub:'Suku Kata',diff:'mudah',
+   q:'Huruf m digabung dengan huruf a menjadi ….',
+   opts:['mi','mu','ma','mo'], ans:2,
+   p:'Huruf "m" + "a" = "ma". Cara membaca huruf konsonan + vokal menghasilkan suku kata.'},
+  {em:'🥭',sub:'Suku Kata',diff:'mudah',
+   q:'Kata "mangga" diawali suku kata ….',
+   opts:['me-','ma-','mi-','mo-'], ans:1,
+   p:'"Mangga" = man-gga. Suku kata pertamanya diawali "ma".'},
+  {em:'🏠',sub:'Suku Kata',diff:'mudah',
+   q:'Kata yang diawali suku kata "gu-" adalah ….',
+   opts:['gajah','gorila','gudang','gelas'], ans:2,
+   p:'"Gudang" = gu-dang. Suku kata pertamanya adalah "gu".'},
+  {em:'🛒',sub:'Suku Kata',diff:'mudah',
+   q:'Suku kata "ge-" terdapat pada kata ….',
+   opts:['gajah','gorila','gerobak','gulai'], ans:2,
+   p:'"Gerobak" = ge-ro-bak. Suku kata pertamanya adalah "ge".'},
+  {em:'🍈',sub:'Suku Kata',diff:'mudah',
+   q:'Nama buah yang diawali suku kata "me-" adalah ….',
+   opts:['mangga','melon','manggis','matoa'], ans:1,
+   p:'"Melon" = me-lon. Suku kata pertamanya adalah "me".'},
+  {em:'🎸',sub:'Suku Kata',diff:'mudah',
+   q:'Kata "gitar" diawali suku kata ….',
+   opts:['ga-','ge-','gi-','gu-'], ans:2,
+   p:'"Gitar" = gi-tar. Suku kata pertamanya adalah "gi".'},
+  {em:'🔔',sub:'Suku Kata',diff:'sedang',
+   q:'Suku kata yang tepat untuk melengkapi "… – lang" (benda yang berbunyi) adalah ….',
+   opts:['ge-','ga-','gi-','gu-'], ans:0,
+   p:'"Ge-lang" = gelang, yaitu perhiasan yang dipakai di pergelangan tangan.'},
+  {em:'🏍️',sub:'Suku Kata',diff:'mudah',
+   q:'Kata "motor" diawali suku kata ….',
+   opts:['ma-','me-','mi-','mo-'], ans:3,
+   p:'"Motor" = mo-tor. Suku kata pertamanya adalah "mo".'},
+  {em:'📝',sub:'Suku Kata',diff:'mudah',
+   q:'Huruf m digabung dengan huruf u menjadi ….',
+   opts:['ma','mi','mu','mo'], ans:2,
+   p:'Huruf "m" + "u" = "mu". Hasil gabungan konsonan dan vokal menghasilkan suku kata.'},
+  {em:'🥤',sub:'Suku Kata',diff:'mudah',
+   q:'Kata "minum" diawali suku kata ….',
+   opts:['ma-','me-','mi-','mu-'], ans:2,
+   p:'"Minum" = mi-num. Suku kata pertamanya adalah "mi".'},
+  {em:'🐘',sub:'Suku Kata',diff:'mudah',
+   q:'Nama hewan yang diawali suku kata "ga-" adalah ….',
+   opts:['gorila','gajah','gudang','gitar'], ans:1,
+   p:'"Gajah" = ga-jah. Hewan besar berbelalai ini diawali suku kata "ga".'},
+  {em:'🦍',sub:'Suku Kata',diff:'mudah',
+   q:'Suku kata "go-" terdapat pada kata ….',
+   opts:['gudang','gitar','gorila','gajah'], ans:2,
+   p:'"Gorila" = go-ri-la. Suku kata pertamanya adalah "go".'},
+  {em:'👗',sub:'Suku Kata',diff:'sedang',
+   q:'Kata "mukena" diawali suku kata ….',
+   opts:['ma-','me-','mi-','mu-'], ans:3,
+   p:'"Mukena" = mu-ke-na. Pakaian ibadah perempuan ini diawali suku kata "mu".'},
+  {em:'🍑',sub:'Suku Kata',diff:'sedang',
+   q:'Nama buah yang mengandung suku kata "ma-" adalah ….',
+   opts:['melon','manggis','mentimun','minyak'], ans:1,
+   p:'"Manggis" = mang-gis. Buah ungu ini mengandung suku kata "ma".'},
+  {em:'👓',sub:'Suku Kata',diff:'sedang',
+   q:'Suku kata yang tepat untuk melengkapi "ka – ca – … – ta" (gambar kacamata) adalah ….',
+   opts:['ma-','mi-','me-','mu-'], ans:1,
+   p:'"Kacamata" = ka-ca-mi-ta (atau ka-ca-ma-ta). Huruf "m" digabung "i" = "mi".'},
+
+  /* ═══ HURUF VOKAL & KONSONAN (5) ═══ */
+  {em:'🔤',sub:'Huruf',diff:'mudah',
+   q:'Huruf vokal pada kata "melon" adalah ….',
+   opts:['m dan l','e dan o','m dan n','l dan n'], ans:1,
+   p:'Huruf vokal adalah a, i, u, e, o. Dalam kata "melon", huruf vokal adalah e dan o.'},
+  {em:'🔡',sub:'Huruf',diff:'mudah',
+   q:'Berikut yang termasuk huruf vokal adalah ….',
+   opts:['b','d','i','g'], ans:2,
+   p:'Huruf vokal ada 5: a, i, u, e, o. Dari pilihan yang ada, hanya "i" yang termasuk vokal.'},
+  {em:'🦁',sub:'Huruf',diff:'sedang',
+   q:'Huruf konsonan pada kata "gajah" adalah ….',
+   opts:['a','g dan j','a dan a','u'], ans:1,
+   p:'Konsonan adalah semua huruf selain vokal. Dalam "gajah", huruf konsonannya adalah g dan j.'},
+  {em:'🏷️',sub:'Huruf',diff:'mudah',
+   q:'Nama "Mona" mengandung gabungan huruf ….',
+   opts:['m dan e','m dan o','m dan i','m dan a'], ans:1,
+   p:'"Mona" mengandung gabungan konsonan "m" dengan vokal "o", menghasilkan suku kata "mo".'},
+  {em:'🌹',sub:'Huruf',diff:'sedang',
+   q:'Jumlah huruf vokal pada kata "mawar" adalah ….',
+   opts:['1','2','3','4'], ans:1,
+   p:'"Mawar" = m-a-w-a-r. Huruf vokalnya adalah "a" (posisi 2) dan "a" (posisi 4) = 2 vokal.'},
+
+  /* ═══ TANDA BACA (5) ═══ */
+  {em:'❓',sub:'Tanda Baca',diff:'mudah',
+   q:'Kalimat "Siapa namamu" diakhiri tanda baca ….',
+   opts:['Titik (.)','Tanya (?)','Seru (!)','Koma (,)'], ans:1,
+   p:'Kalimat tanya selalu diakhiri dengan tanda tanya (?). "Siapa namamu?" adalah kalimat tanya.'},
+  {em:'🔵',sub:'Tanda Baca',diff:'mudah',
+   q:'Kalimat yang diakhiri tanda titik adalah ….',
+   opts:['Siapa namamu','Tolong ambilkan buku itu','Rina anak yang rajin','Di mana rumahmu'], ans:2,
+   p:'"Rina anak yang rajin." adalah kalimat pernyataan, diakhiri tanda titik (.).'},
+  {em:'❗',sub:'Tanda Baca',diff:'mudah',
+   q:'"Tolong bantu aku!" Tanda baca yang dipakai adalah ….',
+   opts:['Tanda titik','Tanda tanya','Tanda seru','Tanda koma'], ans:2,
+   p:'Tanda seru (!) digunakan untuk kalimat perintah atau ungkapan perasaan yang kuat.'},
+  {em:'🔤',sub:'Tanda Baca',diff:'mudah',
+   q:'Kalimat tanya diakhiri tanda baca ….',
+   opts:['Titik (.)','Tanya (?)','Seru (!)','Titik dua (:)'], ans:1,
+   p:'Tanda tanya (?) selalu digunakan di akhir kalimat yang mengandung pertanyaan.'},
+  {em:'📣',sub:'Tanda Baca',diff:'sedang',
+   q:'"Ayo, kita bermain bersama!" Tanda baca dalam kalimat tersebut adalah ….',
+   opts:['Titik dan koma','Seru dan koma','Tanya dan koma','Titik dan seru'], ans:1,
+   p:'Kalimat ini menggunakan koma (,) setelah "Ayo" dan tanda seru (!) di akhir kalimat.'},
+
+  /* ═══ PEMAHAMAN (6) ═══ */
+  {em:'📖',sub:'Pemahaman',diff:'sedang',
+   ctx:'Meta pergi ke toko buku. Meta membeli buku cerita.',
+   q:'Meta membeli ….',
+   opts:['Alat tulis','Buku cerita','Buku gambar','Buku pelajaran'], ans:1,
+   p:'Berdasarkan teks, Meta membeli buku cerita di toko buku.'},
+  {em:'🥤',sub:'Pemahaman',diff:'sedang',
+   ctx:'Moris suka jus stroberi. Gita suka jus alpukat. Munif suka jus jambu.',
+   q:'Siapakah yang suka jus alpukat?',
+   opts:['Moris','Munif','Gita','Meta'], ans:2,
+   p:'Berdasarkan teks, Gita yang suka jus alpukat.'},
+  {em:'🐃',sub:'Pemahaman',diff:'sedang',
+   ctx:'Gege si kerbau memiliki sahabat. Sahabatnya adalah Jaja si burung jalak.',
+   q:'Gege adalah seekor ….',
+   opts:['Burung jalak','Gajah','Kerbau','Singa'], ans:2,
+   p:'Berdasarkan teks, Gege adalah seekor kerbau. Sahabatnya adalah Jaja si burung jalak.'},
+  {em:'🚲',sub:'Pemahaman',diff:'sedang',
+   ctx:'Moko ingin belajar naik sepeda. Moko meminta Ayah untuk mengajarinya.',
+   q:'Moko meminta tolong kepada ….',
+   opts:['Ibu','Kakak','Ayah','Teman'], ans:2,
+   p:'Berdasarkan teks, Moko meminta Ayah untuk mengajarinya naik sepeda.'},
+  {em:'👫',sub:'Pemahaman',diff:'sedang',
+   ctx:'Mega memiliki teman baru. Teman baru Mega adalah Mika, Dina, dan Dimas.',
+   q:'Teman baru Mega yang laki-laki bernama ….',
+   opts:['Mika','Dina','Nana','Dimas'], ans:3,
+   p:'Dari tiga teman baru Mega, yang laki-laki adalah Dimas (Mika dan Dina adalah perempuan).'},
+  {em:'🍪',sub:'Pemahaman',diff:'sedang',
+   ctx:'Maya membawa bekal kue nastar. Maya membagi kuenya dengan Mela.',
+   q:'Maya membawa bekal berupa ….',
+   opts:['Kue bolu','Kue nastar','Kue cubit','Kue lapis'], ans:1,
+   p:'Berdasarkan teks, Maya membawa bekal kue nastar dan membagikannya dengan Mela.'},
+
+  /* ═══ KOSAKATA (9) ═══ */
+  {em:'📚',sub:'Kosakata',diff:'mudah',
+   q:'Buku yang berisi pengetahuan tentang berbagai hal disebut ….',
+   opts:['Kamus','Komik','Ensiklopedia','Novel'], ans:2,
+   p:'Ensiklopedia adalah buku yang berisi informasi dan pengetahuan tentang berbagai macam hal.'},
+  {em:'🥤',sub:'Kosakata',diff:'mudah',
+   q:'Contoh minuman (bukan makanan) adalah ….',
+   opts:['Nasi goreng','Jus jambu','Biru muda','Roti bakar'], ans:1,
+   p:'Jus jambu adalah minuman. Nasi goreng dan roti bakar adalah makanan, biru muda adalah warna.'},
+  {em:'🤝',sub:'Kosakata',diff:'mudah',
+   q:'Sikap yang benar terhadap perbedaan kesukaan teman adalah ….',
+   opts:['Mencemooh','Mengabaikan','Menghargai','Mengejek'], ans:2,
+   p:'Kita harus menghargai setiap perbedaan, termasuk perbedaan kesukaan teman.'},
+  {em:'🚂',sub:'Kosakata',diff:'sedang',
+   q:'Ayah Geri mengemudikan kereta api. Ayah Geri seorang ….',
+   opts:['Sopir','Pilot','Masinis','Nelayan'], ans:2,
+   p:'Pengemudi kereta api disebut masinis. Sopir untuk mobil, pilot untuk pesawat.'},
+  {em:'💰',sub:'Kosakata',diff:'sedang',
+   q:'Kebutuhan harus … daripada keinginan.',
+   opts:['Diabaikan','Dilupakan','Dibuang','Diutamakan'], ans:3,
+   p:'Kebutuhan adalah hal yang harus dipenuhi (makanan, pakaian). Keinginan adalah tambahan. Kebutuhan harus diutamakan.'},
+  {em:'💵',sub:'Kosakata',diff:'mudah',
+   q:'Uang adalah alat ….',
+   opts:['Menabung','Pembayaran yang sah','Bermain','Belajar'], ans:1,
+   p:'Uang berfungsi sebagai alat pembayaran yang sah untuk membeli barang atau jasa.'},
+  {em:'🐦',sub:'Kosakata',diff:'mudah',
+   q:'Binatang yang bersayap, tubuh kecil, punya dua kaki, setiap hari terbang adalah ….',
+   opts:['Kerbau','Kelinci','Burung','Ikan'], ans:2,
+   p:'Ciri-ciri binatang bersayap, berkaki dua, dan bisa terbang adalah burung.'},
+  {em:'🩺',sub:'Kosakata',diff:'mudah',
+   q:'Dokter bertugas untuk ….',
+   opts:['Menjaga apotek','Memeriksa pasien','Mengajar murid','Menjaga keamanan'], ans:1,
+   p:'Dokter bertugas memeriksa dan merawat pasien yang sakit. Guru mengajar, polisi menjaga keamanan.'},
+  {em:'🚿',sub:'Kosakata',diff:'sedang',
+   q:'Alat mandi yang diawali huruf "g" adalah ….',
+   opts:['Sabun','Handuk','Gayung','Pasta gigi'], ans:2,
+   p:'"Gayung" diawali huruf "g". Sabun diawali "s", handuk diawali "h", pasta gigi diawali "p".'},
+];
+
+/* ═══ STATE ═══ */
+let pool = [], qIdx = 0, benar = 0, salah = 0, streak = 0, answered = false;
+let currentQ = null, correctShuffled = 0;
+let currentTopic = 'Semua';
+let wrongLog = [];
+
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function setTopic(t, el){
+  currentTopic = t;
+  document.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  startQuiz();
+}
+
+function startQuiz(){
+  let src = currentTopic === 'Semua' ? ALL_SOAL : ALL_SOAL.filter(s=>s.sub===currentTopic);
+  pool = shuffle(src);
+  qIdx = 0; benar = 0; salah = 0; streak = 0; answered = false; wrongLog = [];
+  updateScore();
+  renderQuestion();
+}
+
+/* ═══ RENDER ═══ */
+function renderQuestion(){
+  const area = document.getElementById('soal-area');
+  if(qIdx >= pool.length){ renderResults(); return; }
+
+  answered = false;
+  currentQ = pool[qIdx];
+  const total = pool.length;
+  const pct = Math.round(((qIdx+1)/total)*100);
+
+  document.getElementById('sc-no').textContent = `${qIdx+1}/${total}`;
+  document.getElementById('prog-label').textContent = `Soal ${qIdx+1} dari ${total}`;
+  document.getElementById('prog-pct').textContent = pct+'%';
+  document.getElementById('progressBar').style.width = Math.max(pct,2)+'%';
+
+  const q = currentQ;
+  const diffClass = {mudah:'diff-mudah',sedang:'diff-sedang',sulit:'diff-sulit'}[q.diff]||'diff-mudah';
+  const diffLabel = {mudah:'Mudah',sedang:'Sedang',sulit:'HOTS'}[q.diff]||'Mudah';
+  const letters = ['A','B','C','D'];
+
+  let opts = q.opts.map((o,i)=>({text:o,orig:i}));
+  opts = shuffle(opts);
+  correctShuffled = opts.findIndex(o=>o.orig===q.ans);
+
+  const ctxHtml = q.ctx ? `<div class="q-context">📄 ${q.ctx}</div>` : '';
+
+  area.innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <div class="q-badge">📚 ${q.sub}</div>
+        <div class="q-difficulty ${diffClass}">${diffLabel}</div>
+      </div>
+      <span class="q-emoji">${q.em}</span>
+      ${ctxHtml}
+      <div class="q-text">${q.q}</div>
+      <div class="q-hint-area" id="q-hint">💡 Klik Petunjuk jika perlu bantuan</div>
+    </div>
+    <div id="feedback-box" class="feedback"></div>
+    <div id="pembahasan-box" class="pembahasan"></div>
+    <div class="options">
+      ${opts.map((o,i)=>`
+        <button class="option" onclick="checkAns(${i})" id="opt-${i}">
+          <div class="opt-letter">${letters[i]}</div>
+          <span>${o.text}</span>
+        </button>`).join('')}
+    </div>
+    <div class="skip-bar" id="skipBar"><div class="skip-fill" id="skipFill" style="width:0%"></div></div>
+    <div class="nav-row" style="margin-top:12px">
+      <button class="btn" onclick="showHint()">💡 Petunjuk</button>
+      <button class="btn coral" onclick="startQuiz()">🔄 Reset</button>
+    </div>
+  `;
+}
+
+function checkAns(idx){
+  if(answered) return;
+  answered = true;
+  const q = currentQ;
+  const btns = document.querySelectorAll('.option');
+  btns.forEach(b=>b.classList.add('disabled'));
+
+  const isCorrect = idx === correctShuffled;
+  if(isCorrect){
+    btns[idx].classList.add('correct');
+    benar++; streak++;
+    updateScore();
+    showFeedback(true);
+    if(streak > 0 && streak % 3 === 0) showStreakToast(`🔥 ${streak} benar berturut-turut!`);
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[correctShuffled].classList.add('correct');
+    salah++; streak = 0;
+    updateScore();
+    showFeedback(false);
+    wrongLog.push({no: qIdx+1, q: q.q, correct: q.opts[q.ans]});
+  }
+
+  const pb = document.getElementById('pembahasan-box');
+  pb.innerHTML = `<strong>📖 Pembahasan:</strong> ${q.p}`;
+  pb.classList.add('show');
+
+  animateSkip();
+}
+
+function animateSkip(){
+  const bar = document.getElementById('skipBar');
+  const fill = document.getElementById('skipFill');
+  if(!bar||!fill) return;
+  bar.style.display = 'block';
+  let pct = 0;
+  const iv = setInterval(()=>{
+    pct += 5;
+    fill.style.width = pct+'%';
+    if(pct >= 100){ clearInterval(iv); setTimeout(()=>{ qIdx++; renderQuestion(); },200); }
+  }, 110);
+}
+
+function showFeedback(ok){
+  const fb = document.getElementById('feedback-box');
+  if(!fb) return;
+  const msgs = ok
+    ? ['✅ Benar! Luar biasa! 🌟','✅ Tepat sekali! 👏','✅ Hebat! 🎉','✅ Kamu pintar! 🏆','✅ Bagus sekali! ⭐']
+    : ['❌ Belum tepat. Yuk baca pembahasannya!','❌ Hampir! Cermati lagi ya!','❌ Salah. Perhatikan penjelasannya!'];
+  const streakStr = ok && streak >= 5 ? ` — Streak ${streak}🔥` : '';
+  fb.textContent = msgs[rand(0,msgs.length-1)] + streakStr;
+  fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
+}
+
+function showHint(){
+  const hint = document.getElementById('q-hint');
+  if(!hint || !currentQ) return;
+  const hints = {
+    'Kata Ajaib':'💡 Ingat: tolong=minta bantuan, maaf=minta ampun, permisi=minta izin, terima kasih=mengucap syukur.',
+    'Suku Kata':'💡 Suku kata = gabungan konsonan + vokal. Contoh: "m"+"a"="ma", "g"+"u"="gu".',
+    'Huruf':'💡 Huruf vokal ada 5: a, i, u, e, o. Semua huruf lainnya adalah konsonan.',
+    'Tanda Baca':'💡 Titik(.)=pernyataan, Tanya(?)=pertanyaan, Seru(!)=perintah/perasaan kuat.',
+    'Pemahaman':'💡 Baca teks dengan teliti, lalu cari jawaban yang ada di dalam teks.',
+    'Kosakata':'💡 Pikirkan arti kata atau hubungan kata dengan profesi/benda yang dimaksud.',
+  };
+  hint.textContent = hints[currentQ.sub] || '💡 Baca soal dengan teliti dan pilih jawaban yang paling tepat!';
+  hint.classList.add('shown');
+}
+
+function updateScore(){
+  document.getElementById('sc-benar').textContent = benar;
+  document.getElementById('sc-salah').textContent = salah;
+  document.getElementById('sc-streak').textContent = streak+'🔥';
+}
+
+function showStreakToast(msg){
+  const t = document.getElementById('streakToast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+/* ═══ RESULTS ═══ */
+function renderResults(){
+  const total = pool.length;
+  const pct = Math.round(benar/total*100);
+  let em, grade, desc;
+  if(pct>=90){em='🏆';grade='A+ Luar Biasa!';desc='Kamu sangat hebat! Kuasai semua materi dengan sempurna!';}
+  else if(pct>=80){em='🌟';grade='A Bagus Sekali!';desc='Hampir sempurna. Terus semangat belajar!';}
+  else if(pct>=70){em='👍';grade='B Cukup Baik';desc='Bagus! Pelajari lagi soal yang masih salah ya.';}
+  else if(pct>=60){em='📚';grade='C Perlu Latihan';desc='Yuk, baca ulang materi dan coba lagi!';}
+  else{em='💪';grade='D Semangat!';desc='Jangan menyerah! Latihan terus ya, pasti bisa!';}
+
+  const wrongHTML = wrongLog.length > 0 ? `
+    <details style="margin-top:16px;text-align:left">
+      <summary style="cursor:pointer;font-weight:800;color:var(--wrong);font-size:.85rem;margin-bottom:8px">
+        ❌ ${wrongLog.length} soal yang salah (klik untuk lihat)
+      </summary>
+      <table class="review-table">
+        <thead><tr><th>No</th><th>Pertanyaan</th><th>Jawaban Benar</th></tr></thead>
+        <tbody>${wrongLog.map(w=>`
+          <tr>
+            <td style="font-weight:800;color:var(--wrong)">#${w.no}</td>
+            <td>${w.q}</td>
+            <td class="rv-benar">${w.correct}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </details>` : `<p style="color:var(--correct);font-weight:800;margin-top:12px">🎉 Sempurna! Semua soal benar!</p>`;
+
+  document.getElementById('soal-area').innerHTML = `
+    <div class="results">
+      <span class="result-emoji">${em}</span>
+      <div style="font-size:.8rem;color:var(--muted);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">
+        Hasil Kuis · ${pool.length} Soal
+      </div>
+      <div class="result-score">${pct}%</div>
+      <div class="result-grade">${grade}</div>
+      <div class="result-desc">${desc}</div>
+      <div class="result-breakdown">
+        <div class="rb-item">
+          <div class="rb-val" style="color:var(--correct)">${benar}</div>
+          <div style="font-size:.7rem;color:var(--muted);font-weight:700">Benar</div>
+        </div>
+        <div class="rb-item">
+          <div class="rb-val" style="color:var(--wrong)">${salah}</div>
+          <div style="font-size:.7rem;color:var(--muted);font-weight:700">Salah</div>
+        </div>
+        <div class="rb-item">
+          <div class="rb-val" style="color:var(--teal)">${pool.length}</div>
+          <div style="font-size:.7rem;color:var(--muted);font-weight:700">Total</div>
+        </div>
+      </div>
+      ${wrongHTML}
+      <div class="nav-row" style="justify-content:center;margin-top:20px">
+        <button class="btn primary" onclick="startQuiz()">🔄 Main Lagi</button>
+      </div>
+    </div>`;
+
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('prog-pct').textContent = '100%';
+}
+
+/* ═══ INIT ═══ */
+startQuiz();
+</script>
+</body>
+</html>
